@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { User, DAYS_OF_WEEK } from '../types'
 import { OTHER_PARENT } from '../types'
+import { showToast } from '../lib/validation'
 import './DateNightHosting.css'
 
 interface DateNightHostingProps {
@@ -23,8 +24,13 @@ export default function DateNightHosting({
   const [saved, setSaved] = useState(false)
 
   const handleSave = () => {
+    if (!selectedNight) {
+      showToast('Please select a night', 'error')
+      return
+    }
     // TODO: Save to database
     setSaved(true)
+    showToast(isOddWeek ? 'Date night saved!' : 'Hosting event saved!', 'success')
     setTimeout(() => setSaved(false), 3000)
   }
 

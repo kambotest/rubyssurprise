@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { OpenLoop, User } from '../types'
 import { supabase } from '../lib/supabase'
+import { validation, showToast } from '../lib/validation'
 import './OpenLoops.css'
 
 interface OpenLoopsProps {
@@ -44,23 +45,30 @@ export default function OpenLoops({ currentUser }: OpenLoopsProps) {
   }
 
   const addLoop = async () => {
-    if (!newLoopTitle.trim()) return
+    const error = validation.loopTitle(newLoopTitle)
+    if (error) {
+      showToast(error, 'error')
+      return
+    }
 
-    const { data, error } = await supabase
+    const { data, error: dbError } = await supabase
       .from('open_loops')
       .insert([
         {
-          title: newLoopTitle,
+          title: validation.sanitize(newLoopTitle),
           created_by: currentUser,
           closed_at: null,
         },
       ])
       .select()
 
-    if (!error && data) {
+    if (dbError) {
+      showToast('Failed to add loop', 'error')
+    } else if (data) {
       setLoops([data[0], ...loops])
       setNewLoopTitle('')
       setShowAddLoop(false)
+      showToast('Loop added!', 'success')
     }
   }
 
@@ -74,25 +82,33 @@ export default function OpenLoops({ currentUser }: OpenLoopsProps) {
       .update({ closed_at: new Date().toISOString() })
       .eq('id', loopId)
 
-    if (!error) {
+    if (error) {
+      showToast('Failed to close loop', 'error')
+      setClosingLoop(null)
+    } else {
       const closedLoop = loops.find((l) => l.id === loopId)
       if (closedLoop) {
         setLoops(loops.filter((l) => l.id !== loopId))
         setClosedLoops([{ ...closedLoop, closed_at: new Date().toISOString() }, ...closedLoops])
+        showToast('Loop closed! 🎉', 'success')
       }
+      setClosingLoop(null)
     }
-
-    setClosingLoop(null)
   }
 
   const deleteLoop = async (loopId: string) => {
+    if (!confirm('Delete this loop?')) return
+
     const { error } = await supabase
       .from('open_loops')
       .delete()
       .eq('id', loopId)
 
-    if (!error) {
+    if (error) {
+      showToast('Failed to delete loop', 'error')
+    } else {
       setLoops(loops.filter((l) => l.id !== loopId))
+      showToast('Loop deleted', 'success')
     }
   }
 

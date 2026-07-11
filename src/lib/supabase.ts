@@ -1,13 +1,51 @@
-import { createClient } from '@supabase/supabase-js'
+// Local-only Supabase-like client for offline functionality
+import { localDb } from './localStorage'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
-const supabaseKey = import.meta.env.VITE_SUPABASE_ANON_KEY
-
-if (!supabaseUrl || !supabaseKey) {
-  throw new Error('Missing Supabase environment variables')
+export const supabase = {
+  auth: localDb.auth,
+  from: (table: string) => ({
+    select: (fields?: string) => ({
+      eq: (field: string, value: any) => ({
+        gte: (field2: string, value2: any) => ({
+          lte: (field3: string, value3: any) => ({
+            order: () => localDb[table as keyof typeof localDb].select(),
+          }),
+          order: () => localDb[table as keyof typeof localDb].select(),
+        }),
+        lte: (field2: string, value2: any) => ({
+          order: () => localDb[table as keyof typeof localDb].select(),
+        }),
+        not: () => localDb[table as keyof typeof localDb].select(),
+        is: () => localDb[table as keyof typeof localDb].select(),
+      }),
+      gte: (field: string, value: any) => ({
+        lte: (field2: string, value2: any) => localDb[table as keyof typeof localDb].select(),
+      }),
+      order: () => localDb[table as keyof typeof localDb].select(),
+    }),
+    insert: (records: any[]) => ({
+      select: () => localDb[table as keyof typeof localDb].insert(records),
+    }),
+    update: (record: any) => ({
+      eq: (field: string, value: any) => {
+        const matching = (localDb[table as keyof typeof localDb] as any)
+        if (matching) {
+          return matching.update(record, value)
+        }
+        return { error: null }
+      },
+    }),
+    delete: () => ({
+      eq: (field: string, value: any) => {
+        const matching = (localDb[table as keyof typeof localDb] as any)
+        if (matching) {
+          return matching.delete(value)
+        }
+        return { error: null }
+      },
+    }),
+  }),
 }
-
-export const supabase = createClient(supabaseUrl, supabaseKey)
 
 export type Database = {
   public: {

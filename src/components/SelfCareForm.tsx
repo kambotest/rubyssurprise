@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react'
 import { User, DAYS_OF_WEEK } from '../types'
 import { supabase } from '../lib/supabase'
+import { validation, showToast } from '../lib/validation'
 import './SelfCareForm.css'
 
 interface SelfCareFormProps {
@@ -26,8 +27,14 @@ export default function SelfCareForm({ weekStart, parent, otherParent }: SelfCar
   }
 
   const saveSelfCare = async () => {
-    if (!activity || !night) {
-      alert('Please fill in both activity and night')
+    const activityError = validation.activityName(activity)
+    if (activityError) {
+      showToast(activityError, 'error')
+      return
+    }
+
+    if (!night) {
+      showToast('Please select a night', 'error')
       return
     }
 
@@ -36,6 +43,9 @@ export default function SelfCareForm({ weekStart, parent, otherParent }: SelfCar
     try {
       // TODO: Save to database
       // await supabase.from('weekly_plans').upsert(...)
+      showToast('Self-care saved!', 'success')
+    } catch {
+      showToast('Failed to save self-care', 'error')
     } finally {
       setLoading(false)
     }

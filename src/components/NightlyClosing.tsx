@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { User, DAYS_OF_WEEK, NightlyChecklist } from '../types'
 import { supabase } from '../lib/supabase'
 import { getDateString, addDays } from '../lib/utils'
+import { showToast } from '../lib/validation'
 import './NightlyClosing.css'
 
 interface NightlyClosingProps {
@@ -80,11 +81,14 @@ export default function NightlyClosing({ weekStart, currentUser }: NightlyClosin
       .update({ [field]: value })
       .eq('id', item.id)
 
-    if (!error) {
+    if (error) {
+      showToast('Failed to update checklist', 'error')
+    } else {
       setChecklist({
         ...checklist,
         [date]: { ...item, [field]: value },
       })
+      if (value) showToast('✓ Checked!', 'success')
     }
   }
 

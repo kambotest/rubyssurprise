@@ -1,5 +1,6 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import { DAYS_OF_WEEK } from '../types'
+import { showToast } from '../lib/validation'
 import './ConnectionNight.css'
 
 interface ConnectionNightProps {
@@ -66,6 +67,13 @@ export default function ConnectionNight({ weekStart }: ConnectionNightProps) {
           </div>
 
           <button
+            onClick={() => {
+              if (!selectedNight) {
+                showToast('Please select a night', 'error')
+                return
+              }
+              showToast('Connection night saved!', 'success')
+            }}
             className="w-full bg-gradient-to-r from-rose-500 to-pink-500 text-white font-medium py-2 rounded-lg hover:from-rose-600 hover:to-pink-600 transition disabled:opacity-50"
             disabled={!selectedNight}
           >

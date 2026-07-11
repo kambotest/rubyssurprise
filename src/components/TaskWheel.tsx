@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { Task, User } from '../types'
 import { supabase } from '../lib/supabase'
 import { formatDate } from '../lib/utils'
+import { validation, showToast } from '../lib/validation'
 import './TaskWheel.css'
 
 interface TaskWheelProps {
@@ -38,13 +39,17 @@ export default function TaskWheel({ weekStart, currentUser }: TaskWheelProps) {
   }
 
   const addTask = async () => {
-    if (!newTaskTitle.trim()) return
+    const titleError = validation.taskTitle(newTaskTitle)
+    if (titleError) {
+      showToast(titleError, 'error')
+      return
+    }
 
     const { data, error } = await supabase
       .from('tasks')
       .insert([
         {
-          title: newTaskTitle,
+          title: validation.sanitize(newTaskTitle),
           created_by: currentUser,
           scheduled_date: null,
           completed: false,
@@ -52,11 +57,14 @@ export default function TaskWheel({ weekStart, currentUser }: TaskWheelProps) {
       ])
       .select()
 
-    if (!error && data) {
+    if (error) {
+      showToast('Failed to add task', 'error')
+    } else if (data) {
       setTasks([...tasks, data[0]])
       setUncompletedTasks([...uncompletedTasks, data[0]])
       setNewTaskTitle('')
       setShowAddTask(false)
+      showToast('Task added!', 'success')
     }
   }
 
@@ -77,14 +85,20 @@ export default function TaskWheel({ weekStart, currentUser }: TaskWheelProps) {
   }
 
   const scheduleTask = async () => {
-    if (!selectedTask || !selectedDate) return
+    if (!selectedTask || !selectedDate) {
+      showToast('Please select a date', 'error')
+      return
+    }
 
     const { error } = await supabase
       .from('tasks')
       .update({ scheduled_date: selectedDate })
       .eq('id', selectedTask.id)
 
-    if (!error) {
+    if (error) {
+      showToast('Failed to schedule task', 'error')
+    } else {
+      showToast('Task scheduled!', 'success')
       setSelectedTask(null)
       setSelectedDate('')
       loadTasks()
@@ -97,18 +111,26 @@ export default function TaskWheel({ weekStart, currentUser }: TaskWheelProps) {
       .update({ completed: true, completed_date: new Date().toISOString() })
       .eq('id', taskId)
 
-    if (!error) {
+    if (error) {
+      showToast('Failed to complete task', 'error')
+    } else {
+      showToast('Task completed! ✨', 'success')
       loadTasks()
     }
   }
 
   const removeTask = async (taskId: string) => {
+    if (!confirm('Remove this task?')) return
+
     const { error } = await supabase
       .from('tasks')
       .delete()
       .eq('id', taskId)
 
-    if (!error) {
+    if (error) {
+      showToast('Failed to remove task', 'error')
+    } else {
+      showToast('Task removed', 'success')
       loadTasks()
     }
   }
