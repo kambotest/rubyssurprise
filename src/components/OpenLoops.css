@@ -1,0 +1,20 @@
+.closing-loop {
+  animation: close-loop 1.5s ease-out forwards;
+}
+
+@keyframes close-loop {
+  0% {
+    opacity: 1;
+    transform: scale(1);
+    background-color: #fef3c7;
+  }
+  50% {
+    opacity: 1;
+    transform: scale(1.05);
+  }
+  100% {
+    opacity: 0.3;
+    transform: scale(0.95);
+    background-color: #ecfdf5;
+  }
+}
