@@ -1,9 +1,11 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import './App.css'
 import { supabase } from './lib/supabase'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { WeekProvider } from './context/WeekContext'
 import Dashboard from './pages/Dashboard'
+
+type PageType = 'dashboard' | 'taskwheel' | 'selfcare' | 'connection' | 'datenighthosting' | 'nightlyclosing' | 'openloops'
 
 function App() {
   return (
@@ -17,6 +19,7 @@ function App() {
 
 function AppContent() {
   const { user, loading, signOut } = useAuth()
+  const [currentPage, setCurrentPage] = useState<PageType>('dashboard')
 
   if (loading) {
     return (
@@ -34,9 +37,14 @@ function AppContent() {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
-      <nav className="bg-white shadow-sm border-b border-amber-100">
+      <nav className="bg-white shadow-sm border-b border-amber-100 sticky top-0 z-50">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-amber-900">💑 Ruby & James</h1>
+          <button
+            onClick={() => setCurrentPage('dashboard')}
+            className="text-2xl font-bold text-amber-900 hover:text-orange-600 transition"
+          >
+            💑 Ruby & James
+          </button>
           <button
             onClick={signOut}
             className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
@@ -47,7 +55,7 @@ function AppContent() {
       </nav>
 
       <main>
-        <Dashboard />
+        <Dashboard currentPage={currentPage} onNavigate={setCurrentPage} />
       </main>
     </div>
   )
