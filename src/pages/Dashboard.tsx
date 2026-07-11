@@ -20,7 +20,7 @@ interface DashboardProps {
 
 const INDEX: { key: PageType; no: string; title: string; note: string }[] = [
   { key: 'taskwheel', no: '01', title: 'The Task Wheel', note: 'Draw a household chore at random and set its day.' },
-  { key: 'selfcare', no: '02', title: 'Screen-Free Hours', note: 'A weekly ritual for each of you, while the other keeps Clara.' },
+  { key: 'selfcare', no: '02', title: 'Independent Free Time', note: 'A weekly ritual for each of you, while the other keeps Clara.' },
   { key: 'connection', no: '03', title: 'Connection Night', note: 'An evening reserved for time together, at home.' },
   { key: 'datenighthosting', no: '04', title: 'Evenings Out & In', note: 'Alternating weeks — a night out, or a table for guests.' },
   { key: 'nightlyclosing', no: '05', title: 'The Closing Shift', note: 'Four small rituals to close each day well.' },
@@ -95,7 +95,7 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
       <div className="index-list">
         {INDEX.map((item) => {
           const label = item.key === 'datenighthosting'
-            ? (isOdd ? 'Evenings Out' : 'Evenings In')
+            ? 'Date Night / Hosting'
             : item.title
           return (
             <button key={item.key} className="index-item" onClick={() => onNavigate(item.key)}>
@@ -118,7 +118,7 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
             <p className="stat__value">0</p>
           </div>
           <div className="stat">
-            <p className="stat__label">Screen-Free Set</p>
+            <p className="stat__label">Independent Time</p>
             <p className="stat__value">0</p>
           </div>
           <div className="stat">

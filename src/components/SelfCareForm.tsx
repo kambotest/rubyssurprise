@@ -37,7 +37,7 @@ export default function SelfCareForm({ weekStart, parent, otherParent }: SelfCar
 
     setLoading(true)
     try {
-      showToast('Screen-free time saved', 'success')
+      showToast('Independent time saved', 'success')
     } catch {
       showToast('Could not save', 'error')
     } finally {
@@ -52,8 +52,8 @@ export default function SelfCareForm({ weekStart, parent, otherParent }: SelfCar
     <div>
       <div className="section-head">
         <span className="eyebrow">No. 02</span>
-        <h2 className="display display--lg">Screen-Free Hours</h2>
-        <p className="lede">One unhurried, screen-free ritual each week — while the other keeps Clara company.</p>
+        <h2 className="display display--lg">Independent Free Time</h2>
+        <p className="lede">One unhurried, uninterrupted ritual each week — while the other keeps Clara company.</p>
       </div>
 
       <div className="grid-2 grid-2--wide">

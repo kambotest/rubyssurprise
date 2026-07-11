@@ -31,8 +31,8 @@ Choose whether you're Ruby or James — no password needed!
 4. Select a date to schedule it
 5. Next week, check off when complete
 
-### Self-Care 🧘
-1. Select an activity (screen-free)
+### Independent Free Time 🧘
+1. Select an activity
 2. Pick which night
 3. The other parent watches Clara
 4. Calendar shows both schedules

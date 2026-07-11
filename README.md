@@ -9,8 +9,8 @@ A warm, sleek **local-only web app** for Ruby and James to coordinate weekly che
 ### 1. Task Wheel 🎡
 Add larger chores/tasks throughout the week, spin a roulette wheel to randomly select which task to tackle that week, schedule it on a specific day, and confirm completion at the next check-in. Completed tasks are removed; incomplete tasks stay in the pool.
 
-### 2. Weekly Self-Care 🧘
-Each parent picks a screen-free self-care activity for the week and chooses the night. The other parent watches Clara during that time.
+### 2. Independent Free Time 🧘
+Each parent picks an independent self-care activity for the week and chooses the night. The other parent watches Clara during that time.
 
 ### 3. Intimacy/Connection Night 💑
 Pick a night each week for at-home connection and quality time together.
