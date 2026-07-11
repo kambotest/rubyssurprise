@@ -21,53 +21,43 @@ export default function DateNightHosting({
   const [menu, setMenu] = useState('')
   const [guestsList, setGuestsList] = useState('')
   const [notes, setNotes] = useState('')
-  const [saved, setSaved] = useState(false)
 
   const handleSave = () => {
     if (!selectedNight) {
-      showToast('Please select a night', 'error')
+      showToast('Please choose a night', 'error')
       return
     }
-    // TODO: Save to database
-    setSaved(true)
-    showToast(isOddWeek ? 'Date night saved!' : 'Hosting event saved!', 'success')
-    setTimeout(() => setSaved(false), 3000)
+    showToast(isOddWeek ? 'Date night saved' : 'Hosting saved', 'success')
   }
 
+  const plannerName = OTHER_PARENT[otherParent] === 'ruby' ? 'Ruby' : 'James'
+  const weekendDays = DAYS_OF_WEEK.slice(4, 7)
+
   return (
-    <div className="max-w-4xl mx-auto">
+    <div>
       {isOddWeek ? (
-        // Date Night Mode
         <>
-          <div className="mb-6">
-            <h2 className="text-3xl font-bold text-emerald-900 mb-2">🌙 Date Night Week</h2>
-            <p className="text-gray-600">Plan your special night out together</p>
+          <div className="section-head">
+            <span className="eyebrow">No. 04 · Odd Week</span>
+            <h2 className="display display--lg">An Evening Out</h2>
+            <p className="lede">A night reserved for the two of you — the sitter arranged, Clara well looked after.</p>
             {planner === otherParent && (
-              <p className="text-sm text-emerald-700 font-medium mt-2">
-                💑 {OTHER_PARENT[otherParent] === 'ruby' ? 'Ruby' : 'James'} is planning this date night
-              </p>
+              <span className="badge badge--accent">{plannerName} is planning this one</span>
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Planning Form */}
-            <div className="bg-white rounded-xl shadow-md p-6 border border-emerald-100">
-              <h3 className="text-xl font-bold text-emerald-900 mb-4">Date Night Details</h3>
+          <div className="grid-2 grid-2--wide">
+            <div className="card">
+              <h3 className="card-title">The Details</h3>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Which night?
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {DAYS_OF_WEEK.slice(4, 7).map((day) => (
+              <div className="field">
+                <label className="label">Which night</label>
+                <div className="choice-grid choice-grid--3">
+                  {weekendDays.map((day) => (
                     <button
                       key={day.num}
                       onClick={() => setSelectedNight(day.name)}
-                      className={`p-3 rounded-lg border-2 transition font-medium ${
-                        selectedNight === day.name
-                          ? 'bg-emerald-100 border-emerald-500 text-emerald-900'
-                          : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-emerald-300'
-                      }`}
+                      className={`choice ${selectedNight === day.name ? 'choice--active' : ''}`}
                     >
                       {day.short}
                     </button>
@@ -75,122 +65,80 @@ export default function DateNightHosting({
                 </div>
               </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Location / Activity:
-                </label>
+              <div className="field">
+                <label className="label">Where / what</label>
                 <input
                   type="text"
                   value={location}
                   onChange={(e) => setLocation(e.target.value)}
-                  placeholder="e.g., Italian restaurant, hiking trail, movie..."
-                  className="w-full px-3 py-2 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                  placeholder="A restaurant, a trail, a film…"
+                  className="input"
                 />
               </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Babysitter Details:
-                </label>
+              <div className="field">
+                <label className="label">Sitter</label>
                 <input
                   type="text"
                   value={babysitter}
                   onChange={(e) => setBabysitter(e.target.value)}
-                  placeholder="Name and phone number"
-                  className="w-full px-3 py-2 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                  placeholder="Name & number"
+                  className="input"
                 />
               </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Notes:
-                </label>
+              <div className="field">
+                <label className="label">Notes</label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Reservation time, what to wear, special surprises..."
+                  placeholder="Reservation time, what to wear, quiet surprises…"
                   rows={3}
-                  className="w-full px-3 py-2 border border-emerald-200 rounded-lg focus:ring-2 focus:ring-emerald-500"
+                  className="textarea"
                 />
               </div>
 
-              <button
-                onClick={handleSave}
-                className="w-full bg-gradient-to-r from-emerald-500 to-teal-500 text-white font-medium py-2 rounded-lg hover:from-emerald-600 hover:to-teal-600 transition"
-              >
-                {saved ? '✓ Saved!' : 'Save Date Night'}
-              </button>
+              <button onClick={handleSave} className="btn btn--primary btn--block">Save the Evening</button>
             </div>
 
-            {/* Summary */}
-            <div className="bg-gradient-to-br from-emerald-50 to-teal-50 rounded-xl shadow-md p-6 border-2 border-emerald-200">
-              <h3 className="text-xl font-bold text-emerald-900 mb-4">Your Special Night</h3>
-
+            <div className="card card--raised">
+              <h3 className="card-title">The Evening</h3>
               {selectedNight ? (
                 <>
-                  <div className="mb-4 p-3 bg-white rounded-lg border border-emerald-200">
-                    <p className="text-xs text-gray-600">Night</p>
-                    <p className="text-lg font-bold text-emerald-900">{selectedNight}</p>
-                  </div>
-
-                  {location && (
-                    <div className="mb-4 p-3 bg-white rounded-lg border border-emerald-200">
-                      <p className="text-xs text-gray-600">Location</p>
-                      <p className="text-lg font-bold text-emerald-900">{location}</p>
-                    </div>
-                  )}
-
-                  {babysitter && (
-                    <div className="mb-4 p-3 bg-white rounded-lg border border-emerald-200">
-                      <p className="text-xs text-gray-600">Babysitter</p>
-                      <p className="text-lg font-bold text-emerald-900">{babysitter}</p>
-                    </div>
-                  )}
-
-                  <div className="bg-white rounded-lg p-4 border-2 border-green-400">
-                    <p className="text-center text-green-900 font-bold">
-                      ✓ Clara is taken care of!
-                    </p>
-                  </div>
+                  <div className="panel"><p className="panel__label">Night</p><p className="panel__value">{selectedNight}</p></div>
+                  {location && <div className="panel mt-6"><p className="panel__label">Where</p><p className="panel__value">{location}</p></div>}
+                  {babysitter && <div className="panel mt-6"><p className="panel__label">Sitter</p><p className="panel__value">{babysitter}</p></div>}
+                  <div className="panel panel--positive mt-6">Clara is looked after.</div>
                 </>
               ) : (
-                <p className="text-center text-emerald-700 py-8">Select a night to get started</p>
+                <p className="empty">Choose a night to begin.</p>
               )}
             </div>
           </div>
         </>
       ) : (
-        // Hosting Mode
         <>
-          <div className="mb-6">
-            <h2 className="text-3xl font-bold text-orange-900 mb-2">🍽️ Hosting Week</h2>
-            <p className="text-gray-600">Plan your hosted meal with guests</p>
+          <div className="section-head">
+            <span className="eyebrow">No. 04 · Even Week</span>
+            <h2 className="display display--lg">A Table at Home</h2>
+            <p className="lede">Guests, a considered menu, and no sitter needed — Clara stays home with you.</p>
             {planner === otherParent && (
-              <p className="text-sm text-orange-700 font-medium mt-2">
-                👥 {OTHER_PARENT[otherParent] === 'ruby' ? 'Ruby' : 'James'} is planning this hosting
-              </p>
+              <span className="badge badge--accent">{plannerName} is hosting this one</span>
             )}
           </div>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-            {/* Planning Form */}
-            <div className="bg-white rounded-xl shadow-md p-6 border border-orange-100">
-              <h3 className="text-xl font-bold text-orange-900 mb-4">Hosting Details</h3>
+          <div className="grid-2 grid-2--wide">
+            <div className="card">
+              <h3 className="card-title">The Details</h3>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Which night?
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  {DAYS_OF_WEEK.slice(4, 7).map((day) => (
+              <div className="field">
+                <label className="label">Which night</label>
+                <div className="choice-grid choice-grid--3">
+                  {weekendDays.map((day) => (
                     <button
                       key={day.num}
                       onClick={() => setSelectedNight(day.name)}
-                      className={`p-3 rounded-lg border-2 transition font-medium ${
-                        selectedNight === day.name
-                          ? 'bg-orange-100 border-orange-500 text-orange-900'
-                          : 'bg-gray-50 border-gray-200 text-gray-700 hover:border-orange-300'
-                      }`}
+                      className={`choice ${selectedNight === day.name ? 'choice--active' : ''}`}
                     >
                       {day.short}
                     </button>
@@ -198,90 +146,62 @@ export default function DateNightHosting({
                 </div>
               </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Guest List (names):
-                </label>
+              <div className="field">
+                <label className="label">Guests</label>
                 <textarea
                   value={guestsList}
                   onChange={(e) => setGuestsList(e.target.value)}
-                  placeholder="List the guests coming over..."
+                  placeholder="Who is coming…"
                   rows={3}
-                  className="w-full px-3 py-2 border border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="textarea"
                 />
               </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Menu Plan:
-                </label>
+              <div className="field">
+                <label className="label">Menu</label>
                 <textarea
                   value={menu}
                   onChange={(e) => setMenu(e.target.value)}
-                  placeholder="Main dish, sides, dessert, drinks..."
+                  placeholder="Mains, sides, something sweet, drinks…"
                   rows={3}
-                  className="w-full px-3 py-2 border border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="textarea"
                 />
               </div>
 
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Notes:
-                </label>
+              <div className="field">
+                <label className="label">Notes</label>
                 <textarea
                   value={notes}
                   onChange={(e) => setNotes(e.target.value)}
-                  placeholder="Setup time, dietary restrictions, entertainment..."
+                  placeholder="Prep time, dietary notes, music…"
                   rows={2}
-                  className="w-full px-3 py-2 border border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="textarea"
                 />
               </div>
 
-              <button
-                onClick={handleSave}
-                className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-medium py-2 rounded-lg hover:from-orange-600 hover:to-amber-600 transition"
-              >
-                {saved ? '✓ Saved!' : 'Save Hosting Plans'}
-              </button>
+              <button onClick={handleSave} className="btn btn--primary btn--block">Save the Table</button>
             </div>
 
-            {/* Summary */}
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl shadow-md p-6 border-2 border-orange-200">
-              <h3 className="text-xl font-bold text-orange-900 mb-4">Hosting Summary</h3>
-
+            <div className="card card--raised">
+              <h3 className="card-title">The Table</h3>
               {selectedNight ? (
                 <>
-                  <div className="mb-4 p-3 bg-white rounded-lg border border-orange-200">
-                    <p className="text-xs text-gray-600">Night</p>
-                    <p className="text-lg font-bold text-orange-900">{selectedNight}</p>
-                  </div>
-
+                  <div className="panel"><p className="panel__label">Night</p><p className="panel__value">{selectedNight}</p></div>
                   {guestsList && (
-                    <div className="mb-4 p-3 bg-white rounded-lg border border-orange-200">
-                      <p className="text-xs text-gray-600">Guests</p>
-                      <div className="text-sm font-medium text-orange-900 mt-1">
-                        {guestsList.split('\n').map((guest, i) => (
-                          <div key={i}>{guest.trim()}</div>
+                    <div className="panel mt-6">
+                      <p className="panel__label">Guests</p>
+                      <div className="guest-list">
+                        {guestsList.split('\n').filter(Boolean).map((g, i) => (
+                          <span key={i} className="guest-list__name">{g.trim()}</span>
                         ))}
                       </div>
                     </div>
                   )}
-
-                  {menu && (
-                    <div className="mb-4 p-3 bg-white rounded-lg border border-orange-200">
-                      <p className="text-xs text-gray-600">Menu</p>
-                      <p className="text-sm font-medium text-orange-900 mt-1">{menu}</p>
-                    </div>
-                  )}
-
-                  <div className="bg-white rounded-lg p-4 border-2 border-green-400">
-                    <p className="text-center text-green-900 font-bold">
-                      ✓ No babysitter needed!
-                    </p>
-                  </div>
+                  {menu && <div className="panel mt-6"><p className="panel__label">Menu</p><p className="panel__value" style={{ fontSize: '0.95rem' }}>{menu}</p></div>}
+                  <div className="panel panel--positive mt-6">No sitter needed.</div>
                 </>
               ) : (
-                <p className="text-center text-orange-700 py-8">Select a night to get started</p>
+                <p className="empty">Choose a night to begin.</p>
               )}
             </div>
           </div>

@@ -1,1 +1,46 @@
-/* Nightly Closing styles */
+/* The Closing Shift */
+
+.closing-progress {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+}
+
+.closing-progress__value {
+  font-family: var(--font-display);
+  font-size: 3.4rem;
+  font-weight: 300;
+  line-height: 1;
+  color: var(--ink);
+  margin-top: 0.4rem;
+}
+.closing-progress__value span {
+  font-size: 1.4rem;
+  color: var(--ink-faint);
+  margin-left: 0.15rem;
+}
+
+.progress-ring {
+  width: 88px;
+  height: 88px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  transition: background 0.5s var(--ease);
+}
+.progress-ring__center {
+  width: 66px;
+  height: 66px;
+  border-radius: 50%;
+  background: var(--surface);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-sans);
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
+  color: var(--ink-soft);
+}

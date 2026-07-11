@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Plus, X } from 'lucide-react'
 import { OpenLoop, User } from '../types'
 import { supabase } from '../lib/supabase'
 import { validation, showToast } from '../lib/validation'
@@ -63,18 +64,17 @@ export default function OpenLoops({ currentUser }: OpenLoopsProps) {
       .select()
 
     if (dbError) {
-      showToast('Failed to add loop', 'error')
+      showToast('Could not add loop', 'error')
     } else if (data) {
       setLoops([data[0], ...loops])
       setNewLoopTitle('')
       setShowAddLoop(false)
-      showToast('Loop added!', 'success')
+      showToast('Loop opened', 'success')
     }
   }
 
   const closeLoop = async (loopId: string) => {
     setClosingLoop(loopId)
-
     await new Promise((resolve) => setTimeout(resolve, 1500))
 
     const { error } = await supabase
@@ -83,14 +83,14 @@ export default function OpenLoops({ currentUser }: OpenLoopsProps) {
       .eq('id', loopId)
 
     if (error) {
-      showToast('Failed to close loop', 'error')
+      showToast('Could not close loop', 'error')
       setClosingLoop(null)
     } else {
       const closedLoop = loops.find((l) => l.id === loopId)
       if (closedLoop) {
         setLoops(loops.filter((l) => l.id !== loopId))
         setClosedLoops([{ ...closedLoop, closed_at: new Date().toISOString() }, ...closedLoops])
-        showToast('Loop closed! 🎉', 'success')
+        showToast('Loop closed', 'success')
       }
       setClosingLoop(null)
     }
@@ -105,7 +105,7 @@ export default function OpenLoops({ currentUser }: OpenLoopsProps) {
       .eq('id', loopId)
 
     if (error) {
-      showToast('Failed to delete loop', 'error')
+      showToast('Could not delete loop', 'error')
     } else {
       setLoops(loops.filter((l) => l.id !== loopId))
       showToast('Loop deleted', 'success')
@@ -113,107 +113,74 @@ export default function OpenLoops({ currentUser }: OpenLoopsProps) {
   }
 
   if (loading) {
-    return <div className="text-center py-8">Loading loops...</div>
+    return <div className="empty">Loading…</div>
   }
 
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="mb-6">
-        <h2 className="text-3xl font-bold text-yellow-900 mb-2">🔄 Open Loops</h2>
-        <p className="text-gray-600">Decisions and tasks being tracked</p>
+    <div>
+      <div className="section-head">
+        <span className="eyebrow">No. 06</span>
+        <h2 className="display display--lg">Open Loops</h2>
+        <p className="lede">The decisions still in the air. Keep them here until each one is quietly resolved.</p>
       </div>
 
-      {/* Add New Loop */}
-      <div className="bg-white rounded-xl shadow-md p-6 border border-yellow-100 mb-6">
-        <div className="flex justify-between items-center mb-4">
-          <h3 className="text-lg font-bold text-yellow-900">Add New Loop</h3>
-          {showAddLoop && (
-            <button
-              onClick={() => setShowAddLoop(false)}
-              className="text-gray-500 hover:text-gray-700 text-xl"
-            >
-              ✕
-            </button>
-          )}
-        </div>
-
+      {/* Add */}
+      <div className="card">
         {showAddLoop ? (
-          <div className="space-y-4">
-            <input
-              type="text"
-              value={newLoopTitle}
-              onChange={(e) => setNewLoopTitle(e.target.value)}
-              placeholder="What decision or task needs to be closed?"
-              className="w-full px-4 py-2 border border-yellow-200 rounded-lg focus:ring-2 focus:ring-yellow-500"
-              onKeyPress={(e) => e.key === 'Enter' && addLoop()}
-              autoFocus
-            />
-            <div className="flex gap-2">
-              <button
-                onClick={addLoop}
-                className="flex-1 bg-gradient-to-r from-yellow-500 to-orange-400 text-white font-medium py-2 rounded-lg hover:from-yellow-600 hover:to-orange-500 transition"
-              >
-                Add Loop
-              </button>
-              <button
-                onClick={() => setShowAddLoop(false)}
-                className="flex-1 bg-gray-300 text-gray-700 font-medium py-2 rounded-lg hover:bg-gray-400 transition"
-              >
-                Cancel
-              </button>
+          <>
+            <div className="spread">
+              <h3 className="card-title" style={{ marginBottom: 0 }}>Open a Loop</h3>
+              <button className="btn-icon" onClick={() => setShowAddLoop(false)}><X /></button>
             </div>
-          </div>
+            <div className="field mt-6">
+              <input
+                type="text"
+                value={newLoopTitle}
+                onChange={(e) => setNewLoopTitle(e.target.value)}
+                placeholder="What decision needs closing?"
+                className="input"
+                onKeyDown={(e) => e.key === 'Enter' && addLoop()}
+                autoFocus
+              />
+              <div className="cluster mt-6">
+                <button onClick={addLoop} className="btn btn--primary btn--sm">Open Loop</button>
+                <button onClick={() => setShowAddLoop(false)} className="btn btn--ghost btn--sm">Cancel</button>
+              </div>
+            </div>
+          </>
         ) : (
-          <button
-            onClick={() => setShowAddLoop(true)}
-            className="w-full px-4 py-2 bg-yellow-100 text-yellow-900 font-medium rounded-lg hover:bg-yellow-200 transition border border-yellow-200"
-          >
-            + Add New Loop
+          <button onClick={() => setShowAddLoop(true)} className="btn btn--ghost btn--block">
+            <Plus size={15} /> Open a New Loop
           </button>
         )}
       </div>
 
-      {/* Open Loops */}
-      <div className="bg-white rounded-xl shadow-md p-6 border border-yellow-100 mb-6">
-        <h3 className="text-xl font-bold text-yellow-900 mb-4">
-          Open Loops ({loops.length})
-        </h3>
-
+      {/* Open */}
+      <div className="card mt-6">
+        <div className="spread card-title--tight">
+          <h3 className="card-title" style={{ marginBottom: 0 }}>Open</h3>
+          <span className="badge">{loops.length}</span>
+        </div>
+        <hr className="rule" />
         {loops.length === 0 ? (
-          <p className="text-center text-gray-500 py-8">No open loops! Great job!</p>
+          <p className="empty">Nothing open. All quiet.</p>
         ) : (
-          <div className="space-y-3">
+          <div className="rows">
             {loops.map((loop) => (
-              <div
-                key={loop.id}
-                className={`p-4 rounded-lg border-2 transition ${
-                  closingLoop === loop.id
-                    ? 'closing-loop bg-yellow-50 border-yellow-400'
-                    : 'bg-yellow-50 border-yellow-200 hover:border-yellow-400'
-                }`}
-              >
-                <div className="flex justify-between items-start gap-4">
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-800">{loop.title}</p>
-                    <p className="text-xs text-gray-500 mt-1">
-                      Created by {loop.created_by}
-                    </p>
-                  </div>
-                  <div className="flex gap-2">
-                    <button
-                      onClick={() => closeLoop(loop.id)}
-                      disabled={closingLoop === loop.id}
-                      className="px-4 py-2 bg-green-500 text-white rounded-lg hover:bg-green-600 transition disabled:opacity-50 font-medium"
-                    >
-                      {closingLoop === loop.id ? '✓ Closing...' : 'Close'}
-                    </button>
-                    <button
-                      onClick={() => deleteLoop(loop.id)}
-                      className="px-4 py-2 bg-red-500 text-white rounded-lg hover:bg-red-600 transition font-medium"
-                    >
-                      Delete
-                    </button>
-                  </div>
+              <div key={loop.id} className={`row loop-row ${closingLoop === loop.id ? 'loop-row--closing' : ''}`}>
+                <div>
+                  <p className="row__title">{loop.title}</p>
+                  <p className="row__meta">Opened by {loop.created_by}</p>
+                </div>
+                <div className="row__actions">
+                  <button
+                    onClick={() => closeLoop(loop.id)}
+                    disabled={closingLoop === loop.id}
+                    className="btn btn--accent btn--sm"
+                  >
+                    {closingLoop === loop.id ? 'Closing…' : 'Close'}
+                  </button>
+                  <button onClick={() => deleteLoop(loop.id)} className="btn btn--ghost btn--sm">Delete</button>
                 </div>
               </div>
             ))}
@@ -221,22 +188,19 @@ export default function OpenLoops({ currentUser }: OpenLoopsProps) {
         )}
       </div>
 
-      {/* Closed Loops Archive */}
+      {/* Closed */}
       {closedLoops.length > 0 && (
-        <div className="bg-white rounded-xl shadow-md p-6 border border-gray-200">
-          <h3 className="text-lg font-bold text-gray-800 mb-4">
-            ✨ Recently Closed ({closedLoops.length})
-          </h3>
-          <div className="space-y-2">
+        <div className="card mt-6">
+          <h3 className="card-title">Recently Closed</h3>
+          <div className="rows">
             {closedLoops.map((loop) => (
-              <div
-                key={loop.id}
-                className="p-3 rounded-lg bg-gray-50 border border-gray-200 opacity-75"
-              >
-                <p className="line-through text-gray-600">{loop.title}</p>
-                <p className="text-xs text-gray-500 mt-1">
-                  Closed {loop.closed_at ? new Date(loop.closed_at).toLocaleDateString() : 'recently'}
-                </p>
+              <div key={loop.id} className="row row--muted">
+                <div>
+                  <p className="row__title">{loop.title}</p>
+                  <p className="row__meta">
+                    Closed {loop.closed_at ? new Date(loop.closed_at).toLocaleDateString() : 'recently'}
+                  </p>
+                </div>
               </div>
             ))}
           </div>

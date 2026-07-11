@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Check, X, Info } from 'lucide-react'
 import { setToastHandler } from '../lib/validation'
 import './Toast.css'
 
@@ -18,23 +19,12 @@ export default function Toast() {
 
   if (!toast) return null
 
-  const bgColor = {
-    success: 'bg-green-500',
-    error: 'bg-red-500',
-    info: 'bg-blue-500',
-  }[toast.type]
-
-  const icon = {
-    success: '✓',
-    error: '✕',
-    info: 'ℹ',
-  }[toast.type]
+  const Icon = { success: Check, error: X, info: Info }[toast.type]
 
   return (
-    <div className={`toast-container ${bgColor}`}>
-      <span className="text-white font-medium">
-        {icon} {toast.message}
-      </span>
+    <div className={`toast toast--${toast.type}`}>
+      <span className="toast__icon"><Icon /></span>
+      <span className="toast__message">{toast.message}</span>
     </div>
   )
 }

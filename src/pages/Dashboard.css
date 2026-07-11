@@ -1,1 +1,104 @@
-/* Dashboard specific styles */
+/* Dashboard / Index */
+
+.dash-hero {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  align-items: flex-start;
+}
+
+.dash-hero__title { margin-top: 1rem; }
+
+.dash-hero__dates {
+  margin-top: 1rem;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-soft);
+}
+
+.dash-hero__mode { margin-top: 1.5rem; }
+
+.weeknav {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.dash-rule { margin: 3rem 0 0; }
+
+/* Index list — an editorial table of contents */
+
+.index-list {
+  border-top: 1px solid var(--line);
+}
+
+.index-item {
+  width: 100%;
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: 1.75rem;
+  padding: 1.85rem 0.5rem;
+  border-bottom: 1px solid var(--line);
+  background: none;
+  text-align: left;
+  transition: background 0.3s var(--ease), padding 0.3s var(--ease);
+}
+.index-item:hover {
+  background: var(--surface);
+  padding-left: 1.25rem;
+  padding-right: 1.25rem;
+}
+
+.index-item__no {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  color: var(--ink-faint);
+  letter-spacing: 0.05em;
+  transition: color 0.3s var(--ease);
+}
+.index-item:hover .index-item__no { color: var(--accent); }
+
+.index-item__body { display: flex; flex-direction: column; gap: 0.3rem; }
+.index-item__title {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.4vw, 1.85rem);
+  color: var(--ink);
+  line-height: 1.05;
+}
+.index-item__note {
+  font-size: 0.85rem;
+  color: var(--ink-soft);
+  font-weight: 300;
+  max-width: 52ch;
+}
+
+.index-item__arrow {
+  color: var(--ink-faint);
+  transition: color 0.3s var(--ease), transform 0.3s var(--ease);
+}
+.index-item__arrow svg { width: 20px; height: 20px; }
+.index-item:hover .index-item__arrow {
+  color: var(--ink);
+  transform: translate(3px, -3px);
+}
+
+.stat__unit {
+  font-size: 1.2rem;
+  color: var(--ink-faint);
+  margin-left: 0.1rem;
+}
+
+@media (min-width: 760px) {
+  .dash-hero {
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: flex-end;
+  }
+}
+
+@media (max-width: 520px) {
+  .index-item { gap: 1rem; }
+  .index-item__note { display: none; }
+}

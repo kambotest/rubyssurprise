@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { User, DAYS_OF_WEEK } from '../types'
-import { supabase } from '../lib/supabase'
 import { validation, showToast } from '../lib/validation'
 import './SelfCareForm.css'
 
@@ -13,8 +12,8 @@ interface SelfCareFormProps {
 export default function SelfCareForm({ weekStart, parent, otherParent }: SelfCareFormProps) {
   const [activity, setActivity] = useState('')
   const [night, setNight] = useState('')
-  const [otherActivity, setOtherActivity] = useState('')
-  const [otherNight, setOtherNight] = useState('')
+  const [otherActivity] = useState('')
+  const [otherNight] = useState('')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
@@ -22,8 +21,7 @@ export default function SelfCareForm({ weekStart, parent, otherParent }: SelfCar
   }, [weekStart])
 
   const loadSelfCare = async () => {
-    // In a real app, fetch from database
-    // For now, just initialize empty
+    // Placeholder — self-care schedule is kept locally per session.
   }
 
   const saveSelfCare = async () => {
@@ -32,139 +30,115 @@ export default function SelfCareForm({ weekStart, parent, otherParent }: SelfCar
       showToast(activityError, 'error')
       return
     }
-
     if (!night) {
-      showToast('Please select a night', 'error')
+      showToast('Please choose a night', 'error')
       return
     }
 
     setLoading(true)
-
     try {
-      // TODO: Save to database
-      // await supabase.from('weekly_plans').upsert(...)
-      showToast('Self-care saved!', 'success')
+      showToast('Screen-free time saved', 'success')
     } catch {
-      showToast('Failed to save self-care', 'error')
+      showToast('Could not save', 'error')
     } finally {
       setLoading(false)
     }
   }
 
-  return (
-    <div className="max-w-4xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        {/* Your Self-Care */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-indigo-100">
-          <h2 className="text-2xl font-bold text-indigo-900 mb-4">
-            🧘 Your Screen-Free Time
-          </h2>
+  const parentName = parent === 'ruby' ? 'Ruby' : 'James'
+  const otherName = otherParent === 'ruby' ? 'Ruby' : 'James'
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Activity ({parent}):
-            </label>
+  return (
+    <div>
+      <div className="section-head">
+        <span className="eyebrow">No. 02</span>
+        <h2 className="display display--lg">Screen-Free Hours</h2>
+        <p className="lede">One unhurried, screen-free ritual each week — while the other keeps Clara company.</p>
+      </div>
+
+      <div className="grid-2 grid-2--wide">
+        {/* Your time */}
+        <div className="card">
+          <h3 className="card-title">Your Ritual · {parentName}</h3>
+
+          <div className="field">
+            <label className="label">Activity</label>
             <input
               type="text"
               value={activity}
               onChange={(e) => setActivity(e.target.value)}
-              placeholder="e.g., yoga, reading, painting..."
-              className="w-full px-3 py-2 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
+              placeholder="Reading, a long bath, painting…"
+              className="input"
             />
           </div>
 
-          <div className="mb-4">
-            <label className="block text-sm font-medium text-gray-700 mb-2">
-              Which night?
-            </label>
-            <select
-              value={night}
-              onChange={(e) => setNight(e.target.value)}
-              className="w-full px-3 py-2 border border-indigo-200 rounded-lg focus:ring-2 focus:ring-indigo-500"
-            >
-              <option value="">Select a night...</option>
+          <div className="field">
+            <label className="label">Which night</label>
+            <div className="choice-grid">
               {DAYS_OF_WEEK.map((day) => (
-                <option key={day.num} value={day.name}>
-                  {day.name}
-                </option>
+                <button
+                  key={day.num}
+                  onClick={() => setNight(day.name)}
+                  className={`choice ${night === day.name ? 'choice--active' : ''}`}
+                >
+                  {day.short}
+                </button>
               ))}
-            </select>
+            </div>
           </div>
 
           {night && (
-            <div className="bg-indigo-50 rounded-lg p-4 mb-4 border border-indigo-200">
-              <p className="text-sm text-indigo-900">
-                ✓ {otherParent} will watch Clara on {night}
-              </p>
+            <div className="panel panel--accent">
+              {otherName} keeps Clara on <strong>{night}</strong>.
             </div>
           )}
 
           <button
             onClick={saveSelfCare}
             disabled={loading || !activity || !night}
-            className="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white font-medium py-2 rounded-lg hover:from-indigo-600 hover:to-purple-600 transition disabled:opacity-50"
+            className="btn btn--primary btn--block mt-6"
           >
-            {loading ? 'Saving...' : 'Save My Self-Care'}
+            {loading ? 'Saving…' : 'Save My Ritual'}
           </button>
         </div>
 
-        {/* Partner's Self-Care Info */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-purple-100">
-          <h2 className="text-2xl font-bold text-purple-900 mb-4">
-            💑 {otherParent === 'ruby' ? 'Ruby' : 'James'}'s Screen-Free Time
-          </h2>
+        {/* Partner's time */}
+        <div className="card">
+          <h3 className="card-title">{otherName}&rsquo;s Ritual</h3>
 
           {otherActivity && otherNight ? (
             <>
-              <div className="mb-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                <p className="text-sm text-gray-600">Activity:</p>
-                <p className="text-lg font-bold text-purple-900">{otherActivity}</p>
+              <div className="panel">
+                <p className="panel__label">Activity</p>
+                <p className="panel__value">{otherActivity}</p>
               </div>
-
-              <div className="mb-4 p-4 bg-purple-50 rounded-lg border border-purple-200">
-                <p className="text-sm text-gray-600">Night:</p>
-                <p className="text-lg font-bold text-purple-900">{otherNight}</p>
+              <div className="panel mt-6">
+                <p className="panel__label">Night</p>
+                <p className="panel__value">{otherNight}</p>
               </div>
-
-              <div className="bg-green-50 rounded-lg p-4 border border-green-200">
-                <p className="text-sm text-green-900">
-                  ✓ You're watching Clara on {otherNight}
-                </p>
-              </div>
+              <div className="panel panel--positive mt-6">You keep Clara on {otherNight}.</div>
             </>
           ) : (
-            <p className="text-center text-gray-500 py-8">
-              Waiting for {otherParent === 'ruby' ? 'Ruby' : 'James'} to set their self-care...
-            </p>
+            <p className="empty">Waiting for {otherName} to set their ritual.</p>
           )}
         </div>
       </div>
 
-      {/* Calendar View */}
-      <div className="mt-6 bg-white rounded-xl shadow-md p-6 border border-indigo-100">
-        <h3 className="text-xl font-bold text-indigo-900 mb-4">Weekly Schedule</h3>
-
-        <div className="grid grid-cols-7 gap-2">
-          {DAYS_OF_WEEK.map((day) => (
-            <div
-              key={day.num}
-              className={`p-4 rounded-lg text-center border-2 transition ${
-                night === day.name
-                  ? 'bg-indigo-100 border-indigo-500'
-                  : otherNight === day.name
-                    ? 'bg-purple-100 border-purple-500'
-                    : 'bg-gray-50 border-gray-200'
-              }`}
-            >
-              <p className="text-sm font-medium text-gray-700">{day.short}</p>
-              {night === day.name && (
-                <p className="text-xs text-indigo-900 mt-2 font-bold">Your Time</p>
-              )}
-              {otherNight === day.name && (
-                <p className="text-xs text-purple-900 mt-2 font-bold">Their Time</p>
-              )}
-            </div>
-          ))}
+      {/* Week view */}
+      <div className="card mt-8">
+        <h3 className="card-title">The Week</h3>
+        <div className="choice-grid choice-grid--7">
+          {DAYS_OF_WEEK.map((day) => {
+            const mine = night === day.name
+            const theirs = otherNight === day.name
+            return (
+              <div key={day.num} className={`week-cell ${mine ? 'week-cell--mine' : ''} ${theirs ? 'week-cell--theirs' : ''}`}>
+                <span className="week-cell__day">{day.short}</span>
+                {mine && <span className="week-cell__tag">You</span>}
+                {theirs && <span className="week-cell__tag">Them</span>}
+              </div>
+            )
+          })}
         </div>
       </div>
     </div>

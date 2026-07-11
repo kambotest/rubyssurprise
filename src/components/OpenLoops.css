@@ -1,20 +1,15 @@
-.closing-loop {
-  animation: close-loop 1.5s ease-out forwards;
+/* Open Loops */
+
+.loop-row {
+  transition: opacity 0.4s var(--ease), transform 0.4s var(--ease);
 }
 
-@keyframes close-loop {
-  0% {
-    opacity: 1;
-    transform: scale(1);
-    background-color: #fef3c7;
-  }
-  50% {
-    opacity: 1;
-    transform: scale(1.05);
-  }
-  100% {
-    opacity: 0.3;
-    transform: scale(0.95);
-    background-color: #ecfdf5;
-  }
+.loop-row--closing {
+  animation: loop-close 1.5s var(--ease) forwards;
+}
+
+@keyframes loop-close {
+  0% { opacity: 1; transform: translateX(0); }
+  40% { opacity: 1; transform: translateX(4px); }
+  100% { opacity: 0.15; transform: translateX(24px); }
 }

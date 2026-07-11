@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { Check, X, Plus } from 'lucide-react'
 import { Task, User } from '../types'
 import { supabase } from '../lib/supabase'
 import { formatDate } from '../lib/utils'
@@ -10,7 +11,12 @@ interface TaskWheelProps {
   currentUser: User
 }
 
-export default function TaskWheel({ weekStart, currentUser }: TaskWheelProps) {
+const WHEEL_TONES = [
+  '#8a6a4a', '#a68a68', '#6f5439', '#bda98a',
+  '#7c5c3d', '#c8b899', '#5c4632', '#9c8264',
+]
+
+export default function TaskWheel({ currentUser }: TaskWheelProps) {
   const [tasks, setTasks] = useState<Task[]>([])
   const [loading, setLoading] = useState(true)
   const [spinning, setSpinning] = useState(false)
@@ -58,13 +64,13 @@ export default function TaskWheel({ weekStart, currentUser }: TaskWheelProps) {
       .select()
 
     if (error) {
-      showToast('Failed to add task', 'error')
+      showToast('Could not add task', 'error')
     } else if (data) {
       setTasks([...tasks, data[0]])
       setUncompletedTasks([...uncompletedTasks, data[0]])
       setNewTaskTitle('')
       setShowAddTask(false)
-      showToast('Task added!', 'success')
+      showToast('Task added', 'success')
     }
   }
 
@@ -75,8 +81,6 @@ export default function TaskWheel({ weekStart, currentUser }: TaskWheelProps) {
     setSelectedTask(null)
 
     const randomIndex = Math.floor(Math.random() * uncompletedTasks.length)
-    const spins = 5 + Math.random() * 5
-    const finalRotation = (randomIndex / uncompletedTasks.length) * 360
 
     setTimeout(() => {
       setSelectedTask(uncompletedTasks[randomIndex])
@@ -86,7 +90,7 @@ export default function TaskWheel({ weekStart, currentUser }: TaskWheelProps) {
 
   const scheduleTask = async () => {
     if (!selectedTask || !selectedDate) {
-      showToast('Please select a date', 'error')
+      showToast('Please choose a date', 'error')
       return
     }
 
@@ -96,9 +100,9 @@ export default function TaskWheel({ weekStart, currentUser }: TaskWheelProps) {
       .eq('id', selectedTask.id)
 
     if (error) {
-      showToast('Failed to schedule task', 'error')
+      showToast('Could not schedule task', 'error')
     } else {
-      showToast('Task scheduled!', 'success')
+      showToast('Task scheduled', 'success')
       setSelectedTask(null)
       setSelectedDate('')
       loadTasks()
@@ -112,9 +116,9 @@ export default function TaskWheel({ weekStart, currentUser }: TaskWheelProps) {
       .eq('id', taskId)
 
     if (error) {
-      showToast('Failed to complete task', 'error')
+      showToast('Could not complete task', 'error')
     } else {
-      showToast('Task completed! ✨', 'success')
+      showToast('Task complete', 'success')
       loadTasks()
     }
   }
@@ -128,7 +132,7 @@ export default function TaskWheel({ weekStart, currentUser }: TaskWheelProps) {
       .eq('id', taskId)
 
     if (error) {
-      showToast('Failed to remove task', 'error')
+      showToast('Could not remove task', 'error')
     } else {
       showToast('Task removed', 'success')
       loadTasks()
@@ -136,194 +140,163 @@ export default function TaskWheel({ weekStart, currentUser }: TaskWheelProps) {
   }
 
   if (loading) {
-    return <div className="text-center py-8">Loading tasks...</div>
+    return <div className="empty">Loading…</div>
   }
 
+  const count = uncompletedTasks.length
+
   return (
-    <div className="max-w-4xl mx-auto">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Left side: Wheel and Controls */}
-        <div>
-          <div className="bg-white rounded-xl shadow-md p-6 border border-amber-100 mb-6">
-            <h2 className="text-2xl font-bold text-amber-900 mb-4">Task Wheel</h2>
+    <div>
+      <div className="section-head">
+        <span className="eyebrow">No. 01</span>
+        <h2 className="display display--lg">The Task Wheel</h2>
+        <p className="lede">Add the chores worth doing, then let the wheel decide which one earns this week.</p>
+      </div>
 
-            <div className="wheel-container mb-6">
+      <div className="grid-2 grid-2--wide">
+        {/* Wheel */}
+        <div className="stack-md">
+          <div className="card">
+            <div className="wheel-stage">
+              <div className="wheel-marker" />
               <svg viewBox="0 0 200 200" className={`wheel ${spinning ? 'spinning' : ''}`}>
-                {uncompletedTasks.map((task, index) => {
-                  const angle = (index / uncompletedTasks.length) * 360
-                  const startAngle = angle
-                  const endAngle = startAngle + (360 / uncompletedTasks.length)
-                  const mid = (startAngle + endAngle) / 2
-                  const rad = (mid * Math.PI) / 180
-                  const x = 100 + 70 * Math.cos(rad)
-                  const y = 100 + 70 * Math.sin(rad)
+                {count > 0 ? (
+                  uncompletedTasks.map((task, index) => {
+                    const startAngle = (index / count) * 360
+                    const endAngle = startAngle + 360 / count
+                    const mid = (startAngle + endAngle) / 2
+                    const rad = (mid * Math.PI) / 180
+                    const x = 100 + 62 * Math.cos(rad)
+                    const y = 100 + 62 * Math.sin(rad)
 
-                  const colors = [
-                    '#d97706', '#f59e0b', '#fbbf24', '#fcd34d',
-                    '#a16207', '#92400e', '#78350f', '#b45309',
-                  ]
-
-                  return (
-                    <g key={task.id}>
-                      <path
-                        d={`M 100 100 L ${100 + 80 * Math.cos((startAngle * Math.PI) / 180)} ${
-                          100 + 80 * Math.sin((startAngle * Math.PI) / 180)
-                        } A 80 80 0 ${endAngle - startAngle > 180 ? 1 : 0} 1 ${
-                          100 + 80 * Math.cos((endAngle * Math.PI) / 180)
-                        } ${100 + 80 * Math.sin((endAngle * Math.PI) / 180)} Z`}
-                        fill={colors[index % colors.length]}
-                        stroke="white"
-                        strokeWidth="2"
-                      />
-                      <text
-                        x={x}
-                        y={y}
-                        textAnchor="middle"
-                        dy="0.3em"
-                        className="text-xs font-bold fill-white pointer-events-none"
-                        fontSize="10"
-                      >
-                        {task.title.substring(0, 15)}
-                      </text>
-                    </g>
-                  )
-                })}
-                <circle cx="100" cy="100" r="20" fill="white" stroke="#d97706" strokeWidth="2" />
-                <text x="100" y="105" textAnchor="middle" className="text-xs font-bold" fontSize="12">
+                    return (
+                      <g key={task.id}>
+                        <path
+                          d={`M 100 100 L ${100 + 92 * Math.cos((startAngle * Math.PI) / 180)} ${
+                            100 + 92 * Math.sin((startAngle * Math.PI) / 180)
+                          } A 92 92 0 ${endAngle - startAngle > 180 ? 1 : 0} 1 ${
+                            100 + 92 * Math.cos((endAngle * Math.PI) / 180)
+                          } ${100 + 92 * Math.sin((endAngle * Math.PI) / 180)} Z`}
+                          fill={WHEEL_TONES[index % WHEEL_TONES.length]}
+                          stroke="#f4f2ec"
+                          strokeWidth="1"
+                        />
+                        <text
+                          x={x}
+                          y={y}
+                          textAnchor="middle"
+                          dy="0.3em"
+                          fill="#f4f2ec"
+                          fontSize="7"
+                          fontFamily="Jost, sans-serif"
+                          letterSpacing="0.5"
+                          transform={`rotate(${mid} ${x} ${y})`}
+                          className="wheel-label"
+                        >
+                          {task.title.substring(0, 16)}
+                        </text>
+                      </g>
+                    )
+                  })
+                ) : (
+                  <circle cx="100" cy="100" r="92" fill="#eeebe2" />
+                )}
+                <circle cx="100" cy="100" r="26" fill="#fbfaf6" stroke="#201d18" strokeWidth="1" />
+                <text
+                  x="100" y="103" textAnchor="middle" fill="#201d18"
+                  fontSize="8" fontFamily="Jost, sans-serif" letterSpacing="2"
+                >
                   SPIN
                 </text>
               </svg>
-
-              <div className="pointer absolute top-0 left-1/2 transform -translate-x-1/2">
-                <div className="w-0 h-0 border-l-4 border-r-4 border-t-8 border-l-transparent border-r-transparent border-t-orange-500"></div>
-              </div>
             </div>
 
             <button
               onClick={spinWheel}
-              disabled={spinning || uncompletedTasks.length === 0}
-              className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-bold py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition disabled:opacity-50 disabled:cursor-not-allowed mb-4"
+              disabled={spinning || count === 0}
+              className="btn btn--primary btn--block btn--lg mt-6"
             >
-              {spinning ? 'Spinning...' : 'SPIN THE WHEEL 🎡'}
+              {spinning ? 'Spinning…' : 'Spin the Wheel'}
             </button>
 
-            {uncompletedTasks.length === 0 && (
-              <p className="text-center text-gray-600 text-sm">
-                Add some tasks to get started!
-              </p>
+            {count === 0 && (
+              <p className="meta text-center mt-6">Add a task or two to begin.</p>
             )}
           </div>
 
-          {/* Selected Task */}
           {selectedTask && (
-            <div className="bg-gradient-to-br from-orange-50 to-amber-50 rounded-xl shadow-md p-6 border-2 border-orange-200">
-              <h3 className="text-lg font-bold text-amber-900 mb-4">✨ Selected Task</h3>
-              <p className="text-xl font-bold text-orange-600 mb-4">{selectedTask.title}</p>
-
-              <div className="mb-4">
-                <label className="block text-sm font-medium text-gray-700 mb-2">
-                  Schedule for:
-                </label>
+            <div className="card card--raised">
+              <span className="eyebrow">Drawn This Week</span>
+              <p className="display display--sm mt-6">{selectedTask.title}</p>
+              <hr className="rule" />
+              <div className="field">
+                <label className="label">Schedule for</label>
                 <input
                   type="date"
                   value={selectedDate}
                   onChange={(e) => setSelectedDate(e.target.value)}
-                  className="w-full px-3 py-2 border border-orange-200 rounded-lg focus:ring-2 focus:ring-orange-500"
+                  className="input"
                 />
               </div>
-
-              <button
-                onClick={scheduleTask}
-                disabled={!selectedDate}
-                className="w-full bg-orange-500 text-white font-medium py-2 rounded-lg hover:bg-orange-600 transition disabled:opacity-50"
-              >
-                Schedule Task
+              <button onClick={scheduleTask} disabled={!selectedDate} className="btn btn--accent btn--block">
+                Set the Day
               </button>
             </div>
           )}
         </div>
 
-        {/* Right side: Task List */}
-        <div className="bg-white rounded-xl shadow-md p-6 border border-amber-100">
-          <div className="flex justify-between items-center mb-4">
-            <h3 className="text-xl font-bold text-amber-900">Task Pool</h3>
-            <button
-              onClick={() => setShowAddTask(!showAddTask)}
-              className="px-3 py-1 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition text-sm"
-            >
-              + Add Task
+        {/* Pool */}
+        <div className="card">
+          <div className="spread card-title--tight">
+            <h3 className="card-title" style={{ marginBottom: 0 }}>Task Pool</h3>
+            <button onClick={() => setShowAddTask(!showAddTask)} className="btn btn--ghost btn--sm">
+              <Plus size={14} /> Add
             </button>
           </div>
 
           {showAddTask && (
-            <div className="mb-4 pb-4 border-b border-amber-100">
+            <div className="field mt-6">
               <input
                 type="text"
                 value={newTaskTitle}
                 onChange={(e) => setNewTaskTitle(e.target.value)}
-                placeholder="Enter task name..."
-                className="w-full px-3 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-orange-500 mb-2"
-                onKeyPress={(e) => e.key === 'Enter' && addTask()}
+                placeholder="Name the task…"
+                className="input"
+                onKeyDown={(e) => e.key === 'Enter' && addTask()}
+                autoFocus
               />
-              <div className="flex gap-2">
-                <button
-                  onClick={addTask}
-                  className="flex-1 bg-orange-500 text-white font-medium py-2 rounded-lg hover:bg-orange-600 transition"
-                >
-                  Add
-                </button>
-                <button
-                  onClick={() => setShowAddTask(false)}
-                  className="flex-1 bg-gray-300 text-gray-700 font-medium py-2 rounded-lg hover:bg-gray-400 transition"
-                >
-                  Cancel
-                </button>
+              <div className="cluster mt-6">
+                <button onClick={addTask} className="btn btn--primary btn--sm">Add Task</button>
+                <button onClick={() => setShowAddTask(false)} className="btn btn--ghost btn--sm">Cancel</button>
               </div>
             </div>
           )}
 
-          <div className="space-y-2 max-h-96 overflow-y-auto">
-            {uncompletedTasks.map((task) => (
-              <div
-                key={task.id}
-                className={`p-3 rounded-lg border transition ${
-                  selectedTask?.id === task.id
-                    ? 'bg-orange-100 border-orange-400'
-                    : 'bg-gray-50 border-gray-200'
-                }`}
-              >
-                <div className="flex justify-between items-start gap-2">
-                  <div className="flex-1">
-                    <p className="font-medium text-gray-800">{task.title}</p>
+          <hr className="rule" />
+
+          {count === 0 ? (
+            <p className="empty">The pool is empty.</p>
+          ) : (
+            <div className="rows">
+              {uncompletedTasks.map((task) => (
+                <div key={task.id} className={`row ${selectedTask?.id === task.id ? 'row--active' : ''}`}>
+                  <div>
+                    <p className="row__title">{task.title}</p>
                     {task.scheduled_date && (
-                      <p className="text-xs text-gray-600 mt-1">
-                        📅 {formatDate(task.scheduled_date)}
-                      </p>
+                      <p className="row__meta">{formatDate(task.scheduled_date)}</p>
                     )}
                   </div>
-                  <div className="flex gap-1">
-                    <button
-                      onClick={() => completeTask(task.id)}
-                      className="px-2 py-1 bg-green-500 text-white text-xs rounded hover:bg-green-600 transition"
-                      title="Mark as completed"
-                    >
-                      ✓
+                  <div className="row__actions">
+                    <button onClick={() => completeTask(task.id)} className="btn-icon" title="Mark complete">
+                      <Check />
                     </button>
-                    <button
-                      onClick={() => removeTask(task.id)}
-                      className="px-2 py-1 bg-red-500 text-white text-xs rounded hover:bg-red-600 transition"
-                      title="Remove task"
-                    >
-                      ✕
+                    <button onClick={() => removeTask(task.id)} className="btn-icon btn-icon--danger" title="Remove">
+                      <X />
                     </button>
                   </div>
                 </div>
-              </div>
-            ))}
-          </div>
-
-          {uncompletedTasks.length === 0 && !showAddTask && (
-            <p className="text-center text-gray-500 py-8">No tasks yet</p>
+              ))}
+            </div>
           )}
         </div>
       </div>

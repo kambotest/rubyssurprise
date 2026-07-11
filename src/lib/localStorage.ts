@@ -150,7 +150,7 @@ export const localDb = {
 
   // Auth operations
   auth: {
-    async signUp({ email, password }: { email: string; password: string }) {
+    async signUp({ email }: { email: string; password: string }) {
       const data = getStorage()
       data.authSession = {
         user: { id: generateId(), email, user_metadata: {} },

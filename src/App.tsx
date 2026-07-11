@@ -25,10 +25,8 @@ function AppContent() {
 
   if (loading) {
     return (
-      <div className="flex items-center justify-center h-screen">
-        <div className="text-center">
-          <h1 className="text-2xl font-bold text-amber-900">Loading...</h1>
-        </div>
+      <div className="app-loading">
+        <span className="eyebrow">Ruby &amp; James</span>
       </div>
     )
   }
@@ -38,28 +36,24 @@ function AppContent() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
-      <nav className="bg-white shadow-sm border-b border-amber-100 sticky top-0 z-50">
-        <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <button
-            onClick={() => setCurrentPage('dashboard')}
-            className="text-2xl font-bold text-amber-900 hover:text-orange-600 transition"
-          >
-            💑 Ruby & James
+    <div className="page">
+      <header className="masthead">
+        <div className="masthead__inner">
+          <button className="wordmark" onClick={() => setCurrentPage('dashboard')}>
+            <span className="wordmark__name">Ruby &amp; James</span>
+            <span className="wordmark__tag">Atelier</span>
           </button>
-          <div className="flex items-center gap-4">
-            <span className="text-sm text-gray-600">
-              👤 {parent === 'ruby' ? 'Ruby' : 'James'}
+          <div className="masthead__actions">
+            <span className="identity">
+              <span className="identity__dot" />
+              {parent === 'ruby' ? 'Ruby' : 'James'}
             </span>
-            <button
-              onClick={() => setParent(null)}
-              className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition text-sm"
-            >
-              Switch Parent
+            <button className="btn btn--ghost btn--sm" onClick={() => setParent(null)}>
+              Switch
             </button>
           </div>
         </div>
-      </nav>
+      </header>
 
       <main>
         <Dashboard currentPage={currentPage} onNavigate={setCurrentPage} />
@@ -70,34 +64,28 @@ function AppContent() {
 
 function ParentSelector({ onSelectParent }: { onSelectParent: (parent: User) => void }) {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md border border-amber-100 text-center">
-        <h1 className="text-3xl font-bold text-amber-900 mb-2">💑 Ruby & James</h1>
-        <p className="text-gray-600 mb-8">Weekly Check-in</p>
-        <p className="text-sm text-gray-500 mb-8">Who are you?</p>
+    <div className="selector">
+      <div className="selector__inner">
+        <span className="eyebrow">Weekly Check-In</span>
+        <h1 className="display display--xl selector__title">Ruby &amp; James</h1>
+        <p className="lede selector__lede">
+          A private space to keep the week in order. Choose your name to continue.
+        </p>
 
-        <div className="flex gap-4">
-          <button
-            onClick={() => onSelectParent('ruby')}
-            className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold py-4 rounded-xl hover:from-pink-600 hover:to-rose-600 transition transform hover:scale-105"
-          >
-            <div className="text-2xl mb-2">💎</div>
-            <div>Ruby</div>
+        <div className="selector__grid">
+          <button className="portal" onClick={() => onSelectParent('ruby')}>
+            <span className="portal__initial">R</span>
+            <span className="portal__name">Ruby</span>
+            <span className="portal__enter">Enter</span>
           </button>
-          <button
-            onClick={() => onSelectParent('james')}
-            className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold py-4 rounded-xl hover:from-blue-600 hover:to-indigo-600 transition transform hover:scale-105"
-          >
-            <div className="text-2xl mb-2">🎯</div>
-            <div>James</div>
+          <button className="portal" onClick={() => onSelectParent('james')}>
+            <span className="portal__initial">J</span>
+            <span className="portal__name">James</span>
+            <span className="portal__enter">Enter</span>
           </button>
         </div>
 
-        <div className="mt-8 p-4 bg-green-50 rounded-lg border border-green-200">
-          <p className="text-xs text-green-900">
-            ✓ No login required — just open this page on your phone and select your name!
-          </p>
-        </div>
+        <p className="selector__note">No password required — your choice is remembered on this device.</p>
       </div>
     </div>
   )
