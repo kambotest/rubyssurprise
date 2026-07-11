@@ -7,11 +7,11 @@ import TaskWheel from '../components/TaskWheel'
 import SelfCareForm from '../components/SelfCareForm'
 import ConnectionNight from '../components/ConnectionNight'
 import DateNightHosting from '../components/DateNightHosting'
-import NightlyClosing from '../components/NightlyClosing'
+import TaskSwap from '../components/TaskSwap'
 import OpenLoops from '../components/OpenLoops'
 import './Dashboard.css'
 
-type PageType = 'dashboard' | 'taskwheel' | 'selfcare' | 'connection' | 'datenighthosting' | 'nightlyclosing' | 'openloops'
+type PageType = 'dashboard' | 'taskwheel' | 'selfcare' | 'connection' | 'datenighthosting' | 'taskswap' | 'openloops'
 
 interface DashboardProps {
   currentPage: PageType
@@ -23,7 +23,7 @@ const INDEX: { key: PageType; no: string; title: string; note: string }[] = [
   { key: 'selfcare', no: '02', title: 'Independent Free Time', note: 'A weekly ritual for each of you, while the other keeps Clara.' },
   { key: 'connection', no: '03', title: 'Connection Night', note: 'An evening reserved for time together, at home.' },
   { key: 'datenighthosting', no: '04', title: 'Evenings Out & In', note: 'Alternating weeks — a night out, or a table for guests.' },
-  { key: 'nightlyclosing', no: '05', title: 'The Closing Shift', note: 'Four small rituals to close each day well.' },
+  { key: 'taskswap', no: '05', title: 'The Task Swap', note: 'Assign a task to each other — the other person completes it this week.' },
   { key: 'openloops', no: '06', title: 'Open Loops', note: 'Decisions still in the air, tracked until resolved.' },
 ]
 
@@ -61,8 +61,8 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
   if (currentPage === 'datenighthosting') {
     return <Subview onBack={back}><DateNightHosting isOddWeek={isOdd} planner={parent} otherParent={otherParent as any} /></Subview>
   }
-  if (currentPage === 'nightlyclosing') {
-    return <Subview onBack={back}><NightlyClosing weekStart={weekStart} currentUser={parent} /></Subview>
+  if (currentPage === 'taskswap') {
+    return <Subview onBack={back}><TaskSwap weekStart={weekStartString} parent={parent} otherParent={otherParent as any} /></Subview>
   }
   if (currentPage === 'openloops') {
     return <Subview onBack={back}><OpenLoops currentUser={parent} /></Subview>
@@ -126,8 +126,8 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
             <p className="stat__value">—</p>
           </div>
           <div className="stat">
-            <p className="stat__label">Closing Shift</p>
-            <p className="stat__value">0<span className="stat__unit">%</span></p>
+            <p className="stat__label">Task Swaps</p>
+            <p className="stat__value">0</p>
           </div>
         </div>
       </div>

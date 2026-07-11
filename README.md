@@ -20,12 +20,8 @@ Alternate weeks between:
 - **Date Night** (odd weeks): One parent plans and arranges babysitting for Clara
 - **Hosting Guests** (even weeks): One parent plans and hosts a meal (no babysitting needed)
 
-### 5. Nightly Closing Shift ✅
-Daily checklist for self-care rituals:
-- Exercise/movement
-- House reset
-- Creatine & fish oil supplements
-- Hydration
+### 5. The Task Swap 🔄
+Assign household tasks to each other for the week. The other person completes the task you've assigned them. Track completion and hold each other accountable.
 
 ### 6. Open Loops 🔄
 Add decisions/tasks, close them with a satisfying visual animation, and keep track of completed loops.

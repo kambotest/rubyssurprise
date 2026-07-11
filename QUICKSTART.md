@@ -48,14 +48,11 @@ Alternates every other week:
 - **Odd weeks**: Plan a date night, add babysitter info
 - **Even weeks**: Plan a meal with guests, add guest list
 
-### Nightly Closing ✅
-Daily checklist for:
-- Exercise/movement
-- House reset
-- Supplements (creatine & fish oil)
-- Hydration
-
-Track your weekly completion %
+### Task Swap 🔄
+1. Assign a task to the other parent
+2. See tasks assigned to you
+3. Mark tasks complete as you finish them
+4. Track progress throughout the week
 
 ### Open Loops 🔄
 1. Add decisions/tasks that need tracking
