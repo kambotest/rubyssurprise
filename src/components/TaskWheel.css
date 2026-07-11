@@ -1,0 +1,50 @@
+.wheel-container {
+  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  aspect-ratio: 1;
+  background: linear-gradient(135deg, #fffbeb 0%, #fff7ed 100%);
+  border-radius: 50%;
+  border: 3px solid #d97706;
+  margin: 0 auto;
+  box-shadow: 0 10px 25px rgba(217, 119, 6, 0.2);
+  overflow: hidden;
+}
+
+.wheel {
+  width: 100%;
+  height: 100%;
+  transform-origin: center;
+  transition: transform 0.1s ease-out;
+}
+
+.wheel.spinning {
+  animation: spin 3s cubic-bezier(0.25, 0.46, 0.45, 0.94) forwards;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(1800deg);
+  }
+}
+
+.pointer {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 12px solid #f97316;
+  z-index: 10;
+}
+
+.wheel-container .pointer {
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
