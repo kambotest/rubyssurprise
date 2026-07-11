@@ -1,10 +1,10 @@
 import { useState } from 'react'
 import './App.css'
-import { supabase } from './lib/supabase'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { WeekProvider } from './context/WeekContext'
 import Dashboard from './pages/Dashboard'
 import Toast from './components/Toast'
+import { User } from './types'
 
 type PageType = 'dashboard' | 'taskwheel' | 'selfcare' | 'connection' | 'datenighthosting' | 'nightlyclosing' | 'openloops'
 
@@ -20,7 +20,7 @@ function App() {
 }
 
 function AppContent() {
-  const { user, loading, signOut } = useAuth()
+  const { parent, loading, setParent } = useAuth()
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard')
 
   if (loading) {
@@ -33,8 +33,8 @@ function AppContent() {
     )
   }
 
-  if (!user) {
-    return <LoginPage />
+  if (!parent) {
+    return <ParentSelector onSelectParent={setParent} />
   }
 
   return (
@@ -47,12 +47,17 @@ function AppContent() {
           >
             💑 Ruby & James
           </button>
-          <button
-            onClick={signOut}
-            className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
-          >
-            Sign Out
-          </button>
+          <div className="flex items-center gap-4">
+            <span className="text-sm text-gray-600">
+              👤 {parent === 'ruby' ? 'Ruby' : 'James'}
+            </span>
+            <button
+              onClick={() => setParent(null)}
+              className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition text-sm"
+            >
+              Switch Parent
+            </button>
+          </div>
         </div>
       </nav>
 
@@ -63,81 +68,34 @@ function AppContent() {
   )
 }
 
-function LoginPage() {
-  const [email, setEmail] = useState('')
-  const [password, setPassword] = useState('')
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
-
-  const handleLogin = async (e: React.FormEvent) => {
-    e.preventDefault()
-    setLoading(true)
-    setError('')
-
-    try {
-      // Demo credentials: ruby@localhost or james@localhost
-      if ((email === 'ruby@localhost' || email === 'james@localhost') && password) {
-        const { error } = await supabase.auth.signInWithPassword({ email, password })
-        if (error) throw error
-      } else {
-        setError('Use ruby@localhost or james@localhost with any password')
-        setLoading(false)
-        return
-      }
-    } catch (err: any) {
-      setError(err.message || 'Login failed')
-      setLoading(false)
-    }
-  }
-
+function ParentSelector({ onSelectParent }: { onSelectParent: (parent: User) => void }) {
   return (
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 flex items-center justify-center px-4">
-      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md border border-amber-100">
-        <h1 className="text-3xl font-bold text-center text-amber-900 mb-2">💑 Ruby & James</h1>
-        <p className="text-center text-gray-600 mb-8">Weekly Check-in</p>
+      <div className="bg-white rounded-2xl shadow-xl p-8 w-full max-w-md border border-amber-100 text-center">
+        <h1 className="text-3xl font-bold text-amber-900 mb-2">💑 Ruby & James</h1>
+        <p className="text-gray-600 mb-8">Weekly Check-in</p>
+        <p className="text-sm text-gray-500 mb-8">Who are you?</p>
 
-        <form onSubmit={handleLogin} className="space-y-4">
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-            <input
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              placeholder="ruby@localhost or james@localhost"
-              required
-            />
-          </div>
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Password</label>
-            <input
-              type="password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              className="w-full px-4 py-2 border border-amber-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
-              placeholder="Any password"
-              required
-            />
-          </div>
-
-          {error && <div className="text-red-500 text-sm bg-red-50 p-3 rounded-lg">{error}</div>}
-
+        <div className="flex gap-4">
           <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-gradient-to-r from-orange-500 to-amber-500 text-white font-medium py-2 rounded-lg hover:from-orange-600 hover:to-amber-600 transition disabled:opacity-50"
+            onClick={() => onSelectParent('ruby')}
+            className="flex-1 bg-gradient-to-r from-pink-500 to-rose-500 text-white font-bold py-4 rounded-xl hover:from-pink-600 hover:to-rose-600 transition transform hover:scale-105"
           >
-            {loading ? 'Logging in...' : 'Sign In'}
+            <div className="text-2xl mb-2">💎</div>
+            <div>Ruby</div>
           </button>
-        </form>
+          <button
+            onClick={() => onSelectParent('james')}
+            className="flex-1 bg-gradient-to-r from-blue-500 to-indigo-500 text-white font-bold py-4 rounded-xl hover:from-blue-600 hover:to-indigo-600 transition transform hover:scale-105"
+          >
+            <div className="text-2xl mb-2">🎯</div>
+            <div>James</div>
+          </button>
+        </div>
 
-        <div className="mt-6 p-4 bg-blue-50 rounded-lg border border-blue-200">
-          <p className="text-xs text-blue-900 font-medium mb-2">🖥️ Local Demo Mode</p>
-          <p className="text-xs text-blue-800">
-            <strong>Email:</strong> ruby@localhost or james@localhost<br />
-            <strong>Password:</strong> any password<br />
-            <strong>Note:</strong> This app runs locally. No internet needed.
+        <div className="mt-8 p-4 bg-green-50 rounded-lg border border-green-200">
+          <p className="text-xs text-green-900">
+            ✓ No login required — just open this page on your phone and select your name!
           </p>
         </div>
       </div>

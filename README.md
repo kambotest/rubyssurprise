@@ -70,17 +70,9 @@ npm run dev
 
 The app will open at `http://localhost:5173`
 
-### Demo Login
+### No Login Required
 
-When prompted, use either:
-- **Email:** `ruby@localhost`
-- **Password:** any password
-
-Or:
-- **Email:** `james@localhost`
-- **Password:** any password
-
-Your data is automatically saved to browser storage and persists across sessions!
+Open the app and select your name (Ruby or James) — that's it! Your data is automatically saved to browser storage and persists across sessions. Each parent can open the app on their own phone.
 
 ## Project Structure
 
@@ -123,12 +115,13 @@ Data is automatically saved after each change and persists across browser sessio
 
 ## Authentication
 
-The app uses **hardcoded demo authentication** for local use:
-- **ruby@localhost** - Demo account for Ruby
-- **james@localhost** - Demo account for James
-- **Any password** works for both accounts
+The app uses **device-based parent identification** for local use:
+- Simply select your name (Ruby or James) when you open the app
+- Your selection is saved per device in browser storage
+- No passwords or logins required
+- Click "Switch Parent" anytime to change users
 
-This is perfect for local-only use. All data is stored in your browser's localStorage.
+Perfect for local-only use where both parents access from their own phones or devices. All data is stored in your browser's localStorage.
 
 ## Data Sync
 
@@ -166,10 +159,10 @@ For now, it's perfect for local use!
 
 ## Troubleshooting
 
-### Login Issues
-- Use `ruby@localhost` or `james@localhost` as email
-- Password can be anything
-- If stuck on login screen, check browser console for errors (F12)
+### Parent Selection Issues
+- Make sure you're clicking one of the parent buttons (Ruby or James)
+- If the page doesn't load, check browser console for errors (F12)
+- Try refreshing the page (Cmd+Shift+R or Ctrl+Shift+R)
 
 ### Data Not Saving
 - Check browser localStorage is enabled
@@ -180,12 +173,13 @@ For now, it's perfect for local use!
 - Clear `node_modules` and reinstall: `rm -rf node_modules && npm install`
 - Clear Vite cache: `rm -rf dist`
 
-### Reset All Data
+### Reset All Data & Parent Selection
 To clear all saved data and start fresh:
 1. Open browser DevTools (F12)
 2. Go to Application → LocalStorage
-3. Find `rubyssurprise_data` and delete it
+3. Delete both `rubyssurprise_data` and `rubyssurprise_currentParent`
 4. Refresh the page
+5. You'll be back to the parent selection screen
 
 ## Future Enhancements
 

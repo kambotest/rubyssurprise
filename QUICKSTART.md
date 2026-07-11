@@ -15,10 +15,8 @@ npm run dev
 ### Step 3: Open in Browser
 Visit: **http://localhost:5173**
 
-### Step 4: Login
-Use **either** account:
-- Email: `ruby@localhost` (Password: anything)
-- Email: `james@localhost` (Password: anything)
+### Step 4: Select Your Name
+Choose whether you're Ruby or James — no password needed!
 
 **Done!** 🎉
 
@@ -78,9 +76,9 @@ Track your weekly completion %
 
 ## 🆘 Troubleshooting
 
-**Stuck on login?**
-- Make sure email is exactly: `ruby@localhost` or `james@localhost`
+**App not loading?**
 - Try opening browser DevTools (F12) to check for errors
+- Make sure you've run `npm run dev` in the project directory
 
 **Data not saving?**
 - Check that browser storage is enabled
@@ -90,8 +88,11 @@ Track your weekly completion %
 **Want to reset everything?**
 1. Open DevTools (F12)
 2. Go to Application → LocalStorage
-3. Delete `rubyssurprise_data`
+3. Delete `rubyssurprise_data` and `rubyssurprise_currentParent`
 4. Refresh page
+
+**Need to switch to the other parent?**
+- Click "Switch Parent" in the top right to change users
 
 ---
 
