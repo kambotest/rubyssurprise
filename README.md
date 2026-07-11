@@ -1,6 +1,8 @@
 # Ruby & James - Weekly Check-in Website
 
-A warm, sleek web app for Ruby and James to coordinate weekly check-ins, manage household tasks, plan date nights, and track daily self-care rituals with their baby Clara.
+A warm, sleek **local-only web app** for Ruby and James to coordinate weekly check-ins, manage household tasks, plan date nights, and track daily self-care rituals with their baby Clara.
+
+🖥️ **Offline-First** • 💾 **Browser-Based Storage** • 🔒 **Private & Secure** • ⚡ **No Setup Required**
 
 ## Features
 
@@ -31,9 +33,12 @@ Add decisions/tasks, close them with a satisfying visual animation, and keep tra
 ## Tech Stack
 
 - **Frontend**: React 18 + TypeScript
-- **Backend/Database**: Supabase (PostgreSQL + Auth)
+- **Storage**: Browser localStorage (offline-first)
+- **Authentication**: Demo mode (hardcoded credentials)
 - **Build Tool**: Vite
 - **Styling**: Custom CSS with warm color palette
+
+**No backend, no server, no internet required!**
 
 ## Getting Started
 
@@ -42,7 +47,7 @@ Add decisions/tasks, close them with a satisfying visual animation, and keep tra
 - Node.js 18+
 - npm or yarn
 
-### Installation
+### Installation (Super Simple!)
 
 1. Clone the repository:
 ```bash
@@ -55,31 +60,27 @@ cd rubyssurprise
 npm install
 ```
 
-3. Set up environment variables:
-```bash
-cp .env.example .env.local
-```
-Then edit `.env.local` with your Supabase credentials:
-```
-VITE_SUPABASE_URL=your_supabase_url
-VITE_SUPABASE_ANON_KEY=your_supabase_anon_key
-```
+3. **That's it!** No environment variables or setup needed.
 
-### Setting Up Supabase
+### Running Locally
 
-1. Create a new Supabase project at [supabase.com](https://supabase.com)
-2. Run the database schema setup (see `database/schema.sql`)
-3. Enable email/password authentication in Supabase
-4. Copy your project URL and anon key to `.env.local`
-
-### Development
-
-Start the development server:
 ```bash
 npm run dev
 ```
 
 The app will open at `http://localhost:5173`
+
+### Demo Login
+
+When prompted, use either:
+- **Email:** `ruby@localhost`
+- **Password:** any password
+
+Or:
+- **Email:** `james@localhost`
+- **Password:** any password
+
+Your data is automatically saved to browser storage and persists across sessions!
 
 ## Project Structure
 
@@ -109,26 +110,32 @@ The app uses a warm, sleek design with:
 
 Typography and spacing are optimized for readability and a calming, welcoming feel.
 
-## Database Schema
+## Data Storage
 
-Key tables:
-- `profiles` - User accounts (Ruby and James)
+All data is stored in **browser localStorage** (no database required):
 - `tasks` - Household chores/tasks
 - `weekly_plans` - Weekly events and activities
 - `nightly_checklist` - Daily self-care tracking
 - `open_loops` - Decisions and tasks being tracked
-- `self_care_activities` - Parent-specific self-care selections
-- `connection_nights` - Intimacy/connection scheduling
-- `date_nights` - Date night planning and tracking
-- `hosting_events` - Guest hosting planning and tracking
+- `authSession` - Demo login session
+
+Data is automatically saved after each change and persists across browser sessions.
 
 ## Authentication
 
-The app uses Supabase Auth with email/password. Only Ruby and James can sign up and access the app (you can configure this in Supabase RLS policies).
+The app uses **hardcoded demo authentication** for local use:
+- **ruby@localhost** - Demo account for Ruby
+- **james@localhost** - Demo account for James
+- **Any password** works for both accounts
 
-## Real-Time Sync
+This is perfect for local-only use. All data is stored in your browser's localStorage.
 
-The app uses Supabase Realtime to keep both parents' views in sync. Changes made by one parent appear instantly for the other.
+## Data Sync
+
+Since this is a local-only app for one machine, data syncs within your browser immediately. If you want to use it on multiple devices, you can:
+1. Export your data using browser dev tools
+2. Clear browser storage to reset
+3. Share the same computer/browser for both accounts
 
 ## Building for Production
 
@@ -138,15 +145,47 @@ npm run build
 
 This creates an optimized build in the `dist/` directory.
 
-## Deployment
+## Running Locally
 
-The app is ready to deploy to:
-- **Vercel** (recommended)
-- **Netlify**
-- **GitHub Pages**
-- **Any static hosting**
+This app is designed to run locally on your machine, not on the internet.
 
-See [Vite deployment docs](https://vitejs.dev/guide/static-deploy.html) for specific platforms.
+To run it:
+```bash
+npm run dev
+```
+
+Visit `http://localhost:5173` in your browser.
+
+**Note:** If you want to share this app with others or run it on a server, you would need to:
+1. Replace the localStorage backend with a real database (Supabase, PostgreSQL, etc.)
+2. Implement proper authentication
+3. Add data sync for multiple devices
+4. Deploy to a web server
+
+For now, it's perfect for local use!
+
+## Troubleshooting
+
+### Login Issues
+- Use `ruby@localhost` or `james@localhost` as email
+- Password can be anything
+- If stuck on login screen, check browser console for errors (F12)
+
+### Data Not Saving
+- Check browser localStorage is enabled
+- Try opening the app in an incognito/private window to test
+- Clear browser cache if data seems lost (Cmd+Shift+R or Ctrl+Shift+R)
+
+### Build Issues
+- Clear `node_modules` and reinstall: `rm -rf node_modules && npm install`
+- Clear Vite cache: `rm -rf dist`
+
+### Reset All Data
+To clear all saved data and start fresh:
+1. Open browser DevTools (F12)
+2. Go to Application → LocalStorage
+3. Find `rubyssurprise_data` and delete it
+4. Refresh the page
 
 ## Future Enhancements
 
