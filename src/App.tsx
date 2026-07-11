@@ -1,26 +1,28 @@
 import { useState, useEffect } from 'react'
 import './App.css'
 import { supabase } from './lib/supabase'
+import { AuthProvider, useAuth } from './context/AuthContext'
+import { WeekProvider } from './context/WeekContext'
+import Dashboard from './pages/Dashboard'
 
 function App() {
-  const [user, setUser] = useState(null)
-  const [loading, setLoading] = useState(true)
+  return (
+    <AuthProvider>
+      <WeekProvider>
+        <AppContent />
+      </WeekProvider>
+    </AuthProvider>
+  )
+}
 
-  useEffect(() => {
-    checkUser()
-  }, [])
-
-  const checkUser = async () => {
-    const { data } = await supabase.auth.getSession()
-    setUser(data?.session?.user ?? null)
-    setLoading(false)
-  }
+function AppContent() {
+  const { user, loading, signOut } = useAuth()
 
   if (loading) {
     return (
       <div className="flex items-center justify-center h-screen">
         <div className="text-center">
-          <h1>Loading...</h1>
+          <h1 className="text-2xl font-bold text-amber-900">Loading...</h1>
         </div>
       </div>
     )
@@ -34,9 +36,9 @@ function App() {
     <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50">
       <nav className="bg-white shadow-sm border-b border-amber-100">
         <div className="max-w-7xl mx-auto px-4 py-4 flex justify-between items-center">
-          <h1 className="text-2xl font-bold text-amber-900">Ruby & James</h1>
+          <h1 className="text-2xl font-bold text-amber-900">💑 Ruby & James</h1>
           <button
-            onClick={() => supabase.auth.signOut()}
+            onClick={signOut}
             className="px-4 py-2 bg-orange-500 text-white rounded-lg hover:bg-orange-600 transition"
           >
             Sign Out
@@ -44,13 +46,8 @@ function App() {
         </div>
       </nav>
 
-      <main className="max-w-7xl mx-auto px-4 py-8">
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div className="bg-white rounded-xl shadow-md p-6 border border-amber-100">
-            <h2 className="text-xl font-bold text-amber-900 mb-4">Weekly Check-in</h2>
-            <p className="text-gray-600">Coming soon...</p>
-          </div>
-        </div>
+      <main>
+        <Dashboard />
       </main>
     </div>
   )
