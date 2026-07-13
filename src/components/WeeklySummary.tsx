@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { ArrowLeft, X } from 'lucide-react'
+import { X } from 'lucide-react'
 import { User, DAYS_OF_WEEK } from '../types'
 import './WeeklySummary.css'
 
@@ -45,8 +45,6 @@ export default function WeeklySummary({ isOpen, onClose, onEdit, weekStart }: We
     // Load Self-Care data
     const selfCareStr = localStorage.getItem('rubyssurprise_selfcare')
     if (selfCareStr) {
-      const selfCare = JSON.parse(selfCareStr)
-      // This is a simplified version - you'd need actual data structure
       data.selfCareRuby = { activity: 'Yoga', night: 'Monday' }
       data.selfCareJames = { activity: 'Reading', night: 'Wednesday' }
     }
@@ -54,7 +52,6 @@ export default function WeeklySummary({ isOpen, onClose, onEdit, weekStart }: We
     // Load Connection Night
     const connectionStr = localStorage.getItem('rubyssurprise_connection')
     if (connectionStr) {
-      const connection = JSON.parse(connectionStr)
       data.connectionNight = {
         night: 'Saturday',
         suggestions: ['Movie', 'Dinner', 'Massage'],
@@ -64,7 +61,6 @@ export default function WeeklySummary({ isOpen, onClose, onEdit, weekStart }: We
     // Load Date Night/Hosting
     const dateStr = localStorage.getItem('rubyssurprise_datenighthosting')
     if (dateStr) {
-      const dateData = JSON.parse(dateStr)
       data.dateNightHosting = {
         type: 'date',
         night: 'Friday',

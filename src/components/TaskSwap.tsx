@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react'
-import { Plus, X, Check } from 'lucide-react'
+import { X, Check } from 'lucide-react'
 import { User } from '../types'
 import { validation, showToast } from '../lib/validation'
 import './TaskSwap.css'
@@ -85,7 +85,6 @@ export default function TaskSwap({ weekStart, parent, otherParent }: TaskSwapPro
     saveTasks(updated)
   }
 
-  const parentName = parent === 'ruby' ? 'Ruby' : 'James'
   const otherName = otherParent === 'ruby' ? 'Ruby' : 'James'
 
   const tasksForMe = tasks.filter(t => t.assignedTo === parent)

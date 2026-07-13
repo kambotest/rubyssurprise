@@ -6,7 +6,7 @@ import Dashboard from './pages/Dashboard'
 import Toast from './components/Toast'
 import { User } from './types'
 
-type PageType = 'dashboard' | 'taskwheel' | 'selfcare' | 'connection' | 'datenighthosting' | 'nightlyclosing' | 'openloops'
+type PageType = 'dashboard' | 'taskwheel' | 'selfcare' | 'connection' | 'datenighthosting' | 'taskswap' | 'openloops'
 
 function App() {
   return (
