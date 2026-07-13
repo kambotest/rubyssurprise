@@ -25,6 +25,7 @@ export default function TaskWheel({ currentUser }: TaskWheelProps) {
   const [uncompletedTasks, setUncompletedTasks] = useState<Task[]>([])
   const [newTaskTitle, setNewTaskTitle] = useState('')
   const [showAddTask, setShowAddTask] = useState(false)
+  const [wheelRotation, setWheelRotation] = useState(0)
 
   useEffect(() => {
     loadTasks()
@@ -81,9 +82,13 @@ export default function TaskWheel({ currentUser }: TaskWheelProps) {
     setSelectedTask(null)
 
     const randomIndex = Math.floor(Math.random() * uncompletedTasks.length)
+    const segmentAngle = 360 / uncompletedTasks.length
+    const segmentMidpoint = (randomIndex + 0.5) * segmentAngle
+    const finalRotation = 270 - segmentMidpoint
 
     setTimeout(() => {
       setSelectedTask(uncompletedTasks[randomIndex])
+      setWheelRotation(finalRotation)
       setSpinning(false)
     }, 3000)
   }
@@ -159,7 +164,7 @@ export default function TaskWheel({ currentUser }: TaskWheelProps) {
           <div className="card">
             <div className="wheel-stage">
               <div className="wheel-marker" />
-              <svg viewBox="0 0 200 200" className={`wheel ${spinning ? 'spinning' : ''}`}>
+              <svg viewBox="0 0 200 200" className={`wheel ${spinning ? 'spinning' : ''}`} style={!spinning ? { transform: `rotate(${wheelRotation}deg)` } : undefined}>
                 {count > 0 ? (
                   uncompletedTasks.map((task, index) => {
                     const startAngle = (index / count) * 360
