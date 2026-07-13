@@ -12,8 +12,8 @@ interface TaskWheelProps {
 }
 
 const WHEEL_TONES = [
-  '#8a6a4a', '#a68a68', '#6f5439', '#bda98a',
-  '#7c5c3d', '#c8b899', '#5c4632', '#9c8264',
+  '#7d8358', '#949a6f', '#5e6440', '#aab087',
+  '#6d7449', '#c0c69f', '#4f5436', '#8a9065',
 ]
 
 export default function TaskWheel({ currentUser }: TaskWheelProps) {
@@ -183,7 +183,7 @@ export default function TaskWheel({ currentUser }: TaskWheelProps) {
                             100 + 92 * Math.cos((endAngle * Math.PI) / 180)
                           } ${100 + 92 * Math.sin((endAngle * Math.PI) / 180)} Z`}
                           fill={WHEEL_TONES[index % WHEEL_TONES.length]}
-                          stroke="#f4f2ec"
+                          stroke="#eef0e6"
                           strokeWidth="1"
                         />
                         <text
@@ -191,7 +191,7 @@ export default function TaskWheel({ currentUser }: TaskWheelProps) {
                           y={y}
                           textAnchor="middle"
                           dy="0.3em"
-                          fill="#f4f2ec"
+                          fill="#eef0e6"
                           fontSize="7"
                           fontFamily="Jost, sans-serif"
                           letterSpacing="0.5"
@@ -204,11 +204,11 @@ export default function TaskWheel({ currentUser }: TaskWheelProps) {
                     )
                   })
                 ) : (
-                  <circle cx="100" cy="100" r="92" fill="#eeebe2" />
+                  <circle cx="100" cy="100" r="92" fill="#e5e8d9" />
                 )}
-                <circle cx="100" cy="100" r="26" fill="#fbfaf6" stroke="#201d18" strokeWidth="1" />
+                <circle cx="100" cy="100" r="26" fill="#f6f7f0" stroke="#23261d" strokeWidth="1" />
                 <text
-                  x="100" y="103" textAnchor="middle" fill="#201d18"
+                  x="100" y="103" textAnchor="middle" fill="#23261d"
                   fontSize="8" fontFamily="Jost, sans-serif" letterSpacing="2"
                 >
                   SPIN

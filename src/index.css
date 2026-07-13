@@ -11,34 +11,34 @@
   --font-sans: 'Jost', 'Century Gothic', 'Futura', -apple-system, BlinkMacSystemFont,
     'Segoe UI', 'Helvetica Neue', sans-serif;
 
-  /* Surface & ink */
-  --bg: #f4f2ec;
-  --bg-tint: #eeebe2;
-  --surface: #fbfaf6;
-  --surface-raised: #ffffff;
+  /* Surface & ink — pale sage & khaki */
+  --bg: #eef0e6;
+  --bg-tint: #e5e8d9;
+  --surface: #f6f7f0;
+  --surface-raised: #fcfdf8;
 
-  --ink: #201d18;
-  --ink-soft: #6a655b;
-  --ink-faint: #9d978a;
+  --ink: #23261d;
+  --ink-soft: #5e6151;
+  --ink-faint: #969888;
 
   /* Structure */
-  --line: #ded9cd;
-  --line-strong: #c7c0b0;
+  --line: #d7dbc7;
+  --line-strong: #bcc1a8;
 
-  /* Accent — muted bronze / clay */
-  --accent: #8a6a4a;
-  --accent-deep: #6f5439;
-  --accent-tint: #ece3d6;
+  /* Accent — muted olive / khaki */
+  --accent: #7d8358;
+  --accent-deep: #5e6440;
+  --accent-tint: #e2e6d0;
 
   /* Signals (muted, never loud) */
   --positive: #5c6b4f;
-  --positive-tint: #e7eadf;
-  --alert: #9c5a4a;
-  --alert-tint: #f0e2dc;
+  --positive-tint: #e0e7d3;
+  --alert: #9c6a4a;
+  --alert-tint: #efe4d8;
 
   --radius: 2px;
-  --shadow: 0 1px 0 rgba(32, 29, 24, 0.03);
-  --shadow-raised: 0 18px 40px -28px rgba(32, 29, 24, 0.45);
+  --shadow: 0 1px 0 rgba(35, 38, 29, 0.03);
+  --shadow-raised: 0 18px 40px -28px rgba(35, 38, 29, 0.45);
 
   --ease: cubic-bezier(0.22, 0.61, 0.36, 1);
 }
@@ -159,7 +159,7 @@ h1, h2, h3, h4, h5, h6 {
   position: sticky;
   top: 0;
   z-index: 50;
-  background: rgba(244, 242, 236, 0.86);
+  background: rgba(238, 240, 230, 0.86);
   backdrop-filter: saturate(140%) blur(10px);
   border-bottom: 1px solid var(--line);
 }
@@ -362,24 +362,24 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn--primary {
   --btn-bg: var(--ink);
-  --btn-fg: #f4f2ec;
+  --btn-fg: #eef0e6;
   --btn-border: var(--ink);
 }
 .btn--primary:hover:not(:disabled) {
   --btn-bg: var(--accent-deep);
   --btn-border: var(--accent-deep);
-  color: #f4f2ec;
+  color: #eef0e6;
 }
 
 .btn--accent {
   --btn-bg: var(--accent);
-  --btn-fg: #f7f2ea;
+  --btn-fg: #f6f7f0;
   --btn-border: var(--accent);
 }
 .btn--accent:hover:not(:disabled) {
   --btn-bg: var(--accent-deep);
   --btn-border: var(--accent-deep);
-  color: #f7f2ea;
+  color: #f6f7f0;
 }
 
 .btn--ghost { --btn-bg: transparent; }
@@ -518,7 +518,7 @@ h1, h2, h3, h4, h5, h6 {
 .choice--active {
   background: var(--ink);
   border-color: var(--ink);
-  color: #f4f2ec;
+  color: #eef0e6;
 }
 .choice__sub {
   display: block;
@@ -559,7 +559,7 @@ h1, h2, h3, h4, h5, h6 {
 .check-row--done .check-box {
   background: var(--positive);
   border-color: var(--positive);
-  color: #f4f2ec;
+  color: #eef0e6;
 }
 .check-box svg { width: 14px; height: 14px; }
 .check-row input { position: absolute; opacity: 0; pointer-events: none; }

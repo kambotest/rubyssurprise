@@ -7,9 +7,9 @@
   gap: 0.75rem;
   padding: 0.95rem 1.25rem;
   background: var(--ink);
-  color: #f4f2ec;
+  color: #eef0e6;
   border-radius: var(--radius);
-  box-shadow: 0 20px 45px -20px rgba(32, 29, 24, 0.6);
+  box-shadow: 0 20px 45px -20px rgba(35, 38, 29, 0.6);
   animation: toast-in 0.35s var(--ease);
   z-index: 9999;
   max-width: 340px;
