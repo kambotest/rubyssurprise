@@ -1,4 +1,5 @@
 import type { ReactNode } from 'react'
+import { useState, useEffect } from 'react'
 import { ArrowLeft, ArrowUpRight, ChevronLeft, ChevronRight } from 'lucide-react'
 import { useWeek } from '../context/WeekContext'
 import { useAuth } from '../context/AuthContext'
@@ -9,6 +10,7 @@ import ConnectionNight from '../components/ConnectionNight'
 import DateNightHosting from '../components/DateNightHosting'
 import TaskSwap from '../components/TaskSwap'
 import OpenLoops from '../components/OpenLoops'
+import WeeklySummary from '../components/WeeklySummary'
 import './Dashboard.css'
 
 type PageType = 'dashboard' | 'taskwheel' | 'selfcare' | 'connection' | 'datenighthosting' | 'taskswap' | 'openloops'
@@ -17,6 +19,8 @@ interface DashboardProps {
   currentPage: PageType
   onNavigate: (page: PageType) => void
 }
+
+type CompletedFeatures = Set<PageType>
 
 const INDEX: { key: PageType; no: string; title: string; note: string }[] = [
   { key: 'taskwheel', no: '01', title: 'The Task Wheel', note: 'Draw a household chore at random and set its day.' },
@@ -41,13 +45,40 @@ function Subview({ onBack, children }: { onBack: () => void; children: ReactNode
 export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
   const { weekStart, weekEnd, weekStartString, isOdd, goToPreviousWeek, goToNextWeek, goToCurrentWeek } = useWeek()
   const { parent } = useAuth()
+  const [completedFeatures, setCompletedFeatures] = useState<CompletedFeatures>(new Set())
+  const [showSummary, setShowSummary] = useState(false)
+
+  useEffect(() => {
+    // Check which features have data saved
+    const features: PageType[] = ['taskwheel', 'selfcare', 'connection', 'datenighthosting', 'taskswap', 'openloops']
+    const completed = new Set<PageType>()
+
+    features.forEach(feature => {
+      const hasData = localStorage.getItem(`rubyssurprise_${feature}`)
+      if (hasData) {
+        completed.add(feature)
+      }
+    })
+
+    setCompletedFeatures(completed)
+  }, [weekStart])
 
   if (!parent) {
     return <div className="container view text-center">Loading…</div>
   }
 
   const otherParent = parent === 'ruby' ? 'james' : 'ruby'
-  const back = () => onNavigate('dashboard')
+  const allFeaturesComplete = completedFeatures.size === 6
+
+  const handleNavigate = (page: PageType) => {
+    setCompletedFeatures(prev => new Set([...prev, page]))
+    onNavigate(page)
+  }
+
+  const back = () => {
+    setShowSummary(false)
+    onNavigate('dashboard')
+  }
 
   if (currentPage === 'taskwheel') {
     return <Subview onBack={back}><TaskWheel weekStart={weekStartString} currentUser={parent} /></Subview>
@@ -65,7 +96,19 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
     return <Subview onBack={back}><TaskSwap weekStart={weekStartString} parent={parent} otherParent={otherParent as any} /></Subview>
   }
   if (currentPage === 'openloops') {
-    return <Subview onBack={back}><OpenLoops currentUser={parent} /></Subview>
+    return (
+      <>
+        <Subview onBack={back}><OpenLoops currentUser={parent} /></Subview>
+        {allFeaturesComplete && (
+          <WeeklySummary
+            isOpen={showSummary || allFeaturesComplete}
+            onClose={() => setShowSummary(false)}
+            onEdit={(feature) => handleNavigate(feature as PageType)}
+            weekStart={weekStartString}
+          />
+        )}
+      </>
+    )
   }
 
   // Index (dashboard)
@@ -98,7 +141,7 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
             ? 'Date Night / Hosting'
             : item.title
           return (
-            <button key={item.key} className="index-item" onClick={() => onNavigate(item.key)}>
+            <button key={item.key} className="index-item" onClick={() => handleNavigate(item.key)}>
               <span className="index-item__no">{item.no}</span>
               <span className="index-item__body">
                 <span className="index-item__title">{label}</span>
