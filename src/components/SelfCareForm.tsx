@@ -3,6 +3,20 @@ import { User, DAYS_OF_WEEK } from '../types'
 import { validation, showToast } from '../lib/validation'
 import './SelfCareForm.css'
 
+const STORAGE_KEY = 'rubyssurprise_selfcare'
+
+interface SelfCareEntry {
+  activity: string
+  night: string
+}
+
+type SelfCareStore = Record<string, Partial<Record<User, SelfCareEntry>>>
+
+function readStore(): SelfCareStore {
+  const raw = localStorage.getItem(STORAGE_KEY)
+  return raw ? JSON.parse(raw) : {}
+}
+
 interface SelfCareFormProps {
   weekStart: string
   parent: User
@@ -12,16 +26,21 @@ interface SelfCareFormProps {
 export default function SelfCareForm({ weekStart, parent, otherParent }: SelfCareFormProps) {
   const [activity, setActivity] = useState('')
   const [night, setNight] = useState('')
-  const [otherActivity] = useState('')
-  const [otherNight] = useState('')
+  const [otherActivity, setOtherActivity] = useState('')
+  const [otherNight, setOtherNight] = useState('')
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
     loadSelfCare()
   }, [weekStart])
 
-  const loadSelfCare = async () => {
-    // Placeholder — self-care schedule is kept locally per session.
+  const loadSelfCare = () => {
+    const store = readStore()
+    const week = store[weekStart] || {}
+    setActivity(week[parent]?.activity || '')
+    setNight(week[parent]?.night || '')
+    setOtherActivity(week[otherParent]?.activity || '')
+    setOtherNight(week[otherParent]?.night || '')
   }
 
   const saveSelfCare = async () => {
@@ -37,6 +56,12 @@ export default function SelfCareForm({ weekStart, parent, otherParent }: SelfCar
 
     setLoading(true)
     try {
+      const store = readStore()
+      store[weekStart] = {
+        ...store[weekStart],
+        [parent]: { activity: validation.sanitize(activity), night },
+      }
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(store))
       showToast('Independent time saved', 'success')
     } catch {
       showToast('Could not save', 'error')

@@ -49,19 +49,23 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
   const [showSummary, setShowSummary] = useState(false)
 
   useEffect(() => {
-    // Check which features have data saved
-    const features: PageType[] = ['taskwheel', 'selfcare', 'connection', 'datenighthosting', 'taskswap', 'openloops']
+    // Restore which features already have saved data for this week
     const completed = new Set<PageType>()
 
-    features.forEach(feature => {
-      const hasData = localStorage.getItem(`rubyssurprise_${feature}`)
-      if (hasData) {
-        completed.add(feature)
-      }
-    })
+    const selfCare = JSON.parse(localStorage.getItem('rubyssurprise_selfcare') || '{}')
+    if (selfCare[weekStartString]) completed.add('selfcare')
+
+    const connection = JSON.parse(localStorage.getItem('rubyssurprise_connection') || '{}')
+    if (connection[weekStartString]) completed.add('connection')
+
+    const dateNight = JSON.parse(localStorage.getItem('rubyssurprise_datenighthosting') || '{}')
+    if (dateNight[weekStartString]) completed.add('datenighthosting')
+
+    const taskSwaps = JSON.parse(localStorage.getItem('rubyssurprise_taskswap') || '[]')
+    if (taskSwaps.some((t: { week: string }) => t.week === weekStartString)) completed.add('taskswap')
 
     setCompletedFeatures(completed)
-  }, [weekStart])
+  }, [weekStartString])
 
   if (!parent) {
     return <div className="container view text-center">Loading…</div>
@@ -90,7 +94,7 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
     return <Subview onBack={back}><ConnectionNight weekStart={weekStartString} /></Subview>
   }
   if (currentPage === 'datenighthosting') {
-    return <Subview onBack={back}><DateNightHosting isOddWeek={isOdd} planner={parent} otherParent={otherParent as any} /></Subview>
+    return <Subview onBack={back}><DateNightHosting weekStart={weekStartString} isOddWeek={isOdd} planner={parent} otherParent={otherParent as any} /></Subview>
   }
   if (currentPage === 'taskswap') {
     return <Subview onBack={back}><TaskSwap weekStart={weekStartString} parent={parent} otherParent={otherParent as any} /></Subview>

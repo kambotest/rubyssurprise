@@ -1,16 +1,37 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { User, DAYS_OF_WEEK } from '../types'
 import { OTHER_PARENT } from '../types'
 import { showToast } from '../lib/validation'
 import './DateNightHosting.css'
 
+const STORAGE_KEY = 'rubyssurprise_datenighthosting'
+
+interface DateNightEntry {
+  type: 'date' | 'hosting'
+  night: string
+  babysitter: string
+  location: string
+  menu: string
+  guestsList: string
+  notes: string
+}
+
+type DateNightStore = Record<string, DateNightEntry>
+
+function readStore(): DateNightStore {
+  const raw = localStorage.getItem(STORAGE_KEY)
+  return raw ? JSON.parse(raw) : {}
+}
+
 interface DateNightHostingProps {
+  weekStart: string
   isOddWeek: boolean
   planner: User
   otherParent: User
 }
 
 export default function DateNightHosting({
+  weekStart,
   isOddWeek,
   planner,
   otherParent,
@@ -22,11 +43,33 @@ export default function DateNightHosting({
   const [guestsList, setGuestsList] = useState('')
   const [notes, setNotes] = useState('')
 
+  useEffect(() => {
+    const store = readStore()
+    const entry = store[weekStart]
+    setSelectedNight(entry?.night || '')
+    setBabysitter(entry?.babysitter || '')
+    setLocation(entry?.location || '')
+    setMenu(entry?.menu || '')
+    setGuestsList(entry?.guestsList || '')
+    setNotes(entry?.notes || '')
+  }, [weekStart])
+
   const handleSave = () => {
     if (!selectedNight) {
       showToast('Please choose a night', 'error')
       return
     }
+    const store = readStore()
+    store[weekStart] = {
+      type: isOddWeek ? 'date' : 'hosting',
+      night: selectedNight,
+      babysitter,
+      location,
+      menu,
+      guestsList,
+      notes,
+    }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store))
     showToast(isOddWeek ? 'Date night saved' : 'Hosting saved', 'success')
   }
 

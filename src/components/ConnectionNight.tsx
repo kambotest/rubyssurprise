@@ -1,7 +1,21 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { DAYS_OF_WEEK } from '../types'
 import { showToast } from '../lib/validation'
 import './ConnectionNight.css'
+
+const STORAGE_KEY = 'rubyssurprise_connection'
+
+interface ConnectionEntry {
+  night: string
+  notes: string
+}
+
+type ConnectionStore = Record<string, ConnectionEntry>
+
+function readStore(): ConnectionStore {
+  const raw = localStorage.getItem(STORAGE_KEY)
+  return raw ? JSON.parse(raw) : {}
+}
 
 interface ConnectionNightProps {
   weekStart: string
@@ -21,15 +35,25 @@ const PAST = [
   { date: 'Friday, 28 June', note: 'A walk through the park, then ice cream.' },
 ]
 
-export default function ConnectionNight({}: ConnectionNightProps) {
+export default function ConnectionNight({ weekStart }: ConnectionNightProps) {
   const [selectedNight, setSelectedNight] = useState('')
   const [notes, setNotes] = useState('')
+
+  useEffect(() => {
+    const store = readStore()
+    const entry = store[weekStart]
+    setSelectedNight(entry?.night || '')
+    setNotes(entry?.notes || '')
+  }, [weekStart])
 
   const save = () => {
     if (!selectedNight) {
       showToast('Please choose a night', 'error')
       return
     }
+    const store = readStore()
+    store[weekStart] = { night: selectedNight, notes }
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(store))
     showToast('Connection night saved', 'success')
   }
 
