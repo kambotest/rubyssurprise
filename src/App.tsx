@@ -1,10 +1,13 @@
-import { useState } from 'react'
+import { useState, useRef } from 'react'
+import { Download, Upload } from 'lucide-react'
 import './App.css'
 import { AuthProvider, useAuth } from './context/AuthContext'
 import { WeekProvider } from './context/WeekContext'
 import Dashboard from './pages/Dashboard'
 import Toast from './components/Toast'
 import { User } from './types'
+import { exportBackup, importBackup } from './lib/backup'
+import { showToast } from './lib/validation'
 
 type PageType = 'dashboard' | 'taskwheel' | 'selfcare' | 'connection' | 'datenighthosting' | 'taskswap' | 'openloops'
 
@@ -22,6 +25,20 @@ function App() {
 function AppContent() {
   const { parent, loading, setParent } = useAuth()
   const [currentPage, setCurrentPage] = useState<PageType>('dashboard')
+  const importInputRef = useRef<HTMLInputElement>(null)
+
+  const handleImportFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    e.target.value = ''
+    if (!file) return
+    try {
+      await importBackup(file)
+      showToast('Backup restored — reloading…', 'success')
+      setTimeout(() => window.location.reload(), 800)
+    } catch {
+      showToast('Could not read that backup file', 'error')
+    }
+  }
 
   if (loading) {
     return (
@@ -48,6 +65,29 @@ function AppContent() {
               <span className="identity__dot" />
               {parent === 'ruby' ? 'Ruby' : 'James'}
             </span>
+            <button
+              className="btn-icon"
+              onClick={() => exportBackup()}
+              title="Download a backup of all entered data"
+              aria-label="Export backup"
+            >
+              <Download />
+            </button>
+            <button
+              className="btn-icon"
+              onClick={() => importInputRef.current?.click()}
+              title="Restore data from a backup file"
+              aria-label="Import backup"
+            >
+              <Upload />
+            </button>
+            <input
+              ref={importInputRef}
+              type="file"
+              accept="application/json"
+              onChange={handleImportFile}
+              style={{ display: 'none' }}
+            />
             <button className="btn btn--ghost btn--sm" onClick={() => setParent(null)}>
               Switch
             </button>
