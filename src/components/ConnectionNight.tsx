@@ -54,14 +54,14 @@ export default function ConnectionNight({ weekStart }: ConnectionNightProps) {
     const store = readStore()
     store[weekStart] = { night: selectedNight, notes }
     localStorage.setItem(STORAGE_KEY, JSON.stringify(store))
-    showToast('Connection night saved', 'success')
+    showToast('Deeper intimacy night saved', 'success')
   }
 
   return (
     <div>
       <div className="section-head">
         <span className="eyebrow">No. 03</span>
-        <h2 className="display display--lg">Connection Night</h2>
+        <h2 className="display display--lg">Deeper Intimacy Night</h2>
         <p className="lede">One evening set aside — no errands, no screens by default. Just the two of you.</p>
       </div>
 

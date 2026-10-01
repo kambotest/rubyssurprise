@@ -8,12 +8,11 @@ import TaskWheel from '../components/TaskWheel'
 import SelfCareForm from '../components/SelfCareForm'
 import ConnectionNight from '../components/ConnectionNight'
 import DateNightHosting from '../components/DateNightHosting'
-import TaskSwap from '../components/TaskSwap'
 import OpenLoops from '../components/OpenLoops'
 import WeeklySummary from '../components/WeeklySummary'
 import './Dashboard.css'
 
-type PageType = 'dashboard' | 'taskwheel' | 'selfcare' | 'connection' | 'datenighthosting' | 'taskswap' | 'openloops'
+type PageType = 'dashboard' | 'taskwheel' | 'selfcare' | 'connection' | 'datenighthosting' | 'openloops'
 
 interface DashboardProps {
   currentPage: PageType
@@ -25,10 +24,9 @@ type CompletedFeatures = Set<PageType>
 const INDEX: { key: PageType; no: string; title: string; note: string }[] = [
   { key: 'taskwheel', no: '01', title: 'The Task Wheel', note: 'Draw a household chore at random and set its day.' },
   { key: 'selfcare', no: '02', title: 'Independent Free Time', note: 'A weekly ritual for each of you, while the other keeps Clara.' },
-  { key: 'connection', no: '03', title: 'Connection Night', note: 'An evening reserved for time together, at home.' },
+  { key: 'connection', no: '03', title: 'Deeper Intimacy Night', note: 'An evening reserved for time together, at home.' },
   { key: 'datenighthosting', no: '04', title: 'Evenings Out & In', note: 'Alternating weeks — a night out, or a table for guests.' },
-  { key: 'taskswap', no: '05', title: 'The Task Swap', note: 'Assign a task to each other — the other person completes it this week.' },
-  { key: 'openloops', no: '06', title: 'Open Loops', note: 'Decisions still in the air, tracked until resolved.' },
+  { key: 'openloops', no: '05', title: 'Open Loops', note: 'Decisions still in the air, tracked until resolved.' },
 ]
 
 function Subview({ onBack, children }: { onBack: () => void; children: ReactNode }) {
@@ -61,9 +59,6 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
     const dateNight = JSON.parse(localStorage.getItem('rubyssurprise_datenighthosting') || '{}')
     if (dateNight[weekStartString]) completed.add('datenighthosting')
 
-    const taskSwaps = JSON.parse(localStorage.getItem('rubyssurprise_taskswap') || '[]')
-    if (taskSwaps.some((t: { week: string }) => t.week === weekStartString)) completed.add('taskswap')
-
     setCompletedFeatures(completed)
   }, [weekStartString])
 
@@ -72,7 +67,7 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
   }
 
   const otherParent = parent === 'ruby' ? 'james' : 'ruby'
-  const allFeaturesComplete = completedFeatures.size === 6
+  const allFeaturesComplete = completedFeatures.size === 5
 
   const handleNavigate = (page: PageType) => {
     setCompletedFeatures(prev => new Set([...prev, page]))
@@ -95,9 +90,6 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
   }
   if (currentPage === 'datenighthosting') {
     return <Subview onBack={back}><DateNightHosting weekStart={weekStartString} isOddWeek={isOdd} planner={parent} otherParent={otherParent as any} /></Subview>
-  }
-  if (currentPage === 'taskswap') {
-    return <Subview onBack={back}><TaskSwap weekStart={weekStartString} parent={parent} otherParent={otherParent as any} /></Subview>
   }
   if (currentPage === 'openloops') {
     return (
@@ -157,27 +149,6 @@ export default function Dashboard({ currentPage, onNavigate }: DashboardProps) {
         })}
       </div>
 
-      <div className="mt-8">
-        <span className="eyebrow">This Week in Brief</span>
-        <div className="grid-stats mt-6">
-          <div className="stat">
-            <p className="stat__label">Tasks Scheduled</p>
-            <p className="stat__value">0</p>
-          </div>
-          <div className="stat">
-            <p className="stat__label">Independent Time</p>
-            <p className="stat__value">0</p>
-          </div>
-          <div className="stat">
-            <p className="stat__label">Connection Night</p>
-            <p className="stat__value">—</p>
-          </div>
-          <div className="stat">
-            <p className="stat__label">Task Swaps</p>
-            <p className="stat__value">0</p>
-          </div>
-        </div>
-      </div>
     </div>
   )
 }
