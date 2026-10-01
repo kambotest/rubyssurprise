@@ -9,7 +9,7 @@ import { User } from './types'
 import { exportBackup, importBackup } from './lib/backup'
 import { showToast } from './lib/validation'
 
-type PageType = 'dashboard' | 'taskwheel' | 'selfcare' | 'connection' | 'datenighthosting' | 'taskswap' | 'openloops'
+type PageType = 'dashboard' | 'taskwheel' | 'selfcare' | 'connection' | 'datenighthosting' | 'openloops'
 
 function App() {
   return (
